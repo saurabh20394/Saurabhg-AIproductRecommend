@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Saurabhg\AIproductRecommend\Observer\AddToCartObserver" type="Saurabhg\AIproductRecommend\Observer\StorefrontEventObserver">
+        <arguments>
+            <argument name="eventType" xsi:type="string">add_to_cart</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Observer\RemoveFromCartObserver" type="Saurabhg\AIproductRecommend\Observer\StorefrontEventObserver">
+        <arguments>
+            <argument name="eventType" xsi:type="string">remove_from_cart</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Observer\WishlistAddObserver" type="Saurabhg\AIproductRecommend\Observer\StorefrontEventObserver">
+        <arguments>
+            <argument name="eventType" xsi:type="string">wishlist_add</argument>
+        </arguments>
+    </virtualType>
+</config>

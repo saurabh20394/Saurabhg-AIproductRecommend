@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">saurabhg_airecommend_unit_form.saurabhg_airecommend_unit_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Recommendation Unit</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save_and_continue" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveAndContinueButton"/>
+            <button name="save" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveButton"/>
+            <button name="delete" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\DeleteButton"/>
+            <button name="back" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\BackButton"/>
+        </buttons>
+        <namespace>saurabhg_airecommend_unit_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>saurabhg_airecommend_unit_form.saurabhg_airecommend_unit_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="saurabhg_airecommend_unit_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="Saurabhg\AIproductRecommend\Ui\DataProvider\UnitForm" name="saurabhg_airecommend_unit_form_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label translate="true">Unit</label>
+            <collapsible>false</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="entity_id" formElement="hidden">
+            <settings>
+                <dataType>text</dataType>
+            </settings>
+        </field>
+        <field name="status" formElement="checkbox" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Enabled</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="code" formElement="input" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Unit Code</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Unique identifier used by widgets, REST (/V1/ai-recommendations/units/{code}) and GraphQL (unitCode).</notice>
+            </settings>
+        </field>
+        <field name="title" formElement="input" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Title</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Shown above the products (translatable per store through Magento translations).</notice>
+            </settings>
+        </field>
+        <field name="type" formElement="select" sortOrder="40">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Recommendation Type</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\UnitType"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="placement" formElement="select" sortOrder="50">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">widget_only</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Placement</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Automatic storefront position, or CMS widget / API only.</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\Placement"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="position" formElement="input" sortOrder="60">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Sort Order in Placement</label>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="product_count" formElement="input" sortOrder="70">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">6</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Product Count</label>
+                <validation>
+                    <rule name="validate-digits" xsi:type="boolean">true</rule>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">1-50</notice>
+            </settings>
+        </field>
+        <field name="fallback_type" formElement="select" sortOrder="80">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">popular</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Fallback Strategy</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Used when the primary algorithm returns nothing.</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\FallbackType"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="show_reason" formElement="checkbox" sortOrder="90">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Show Recommendation Reason</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="scope" sortOrder="20">
+        <settings>
+            <label translate="true">Scope &amp; Targeting</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="store_ids" formElement="multiselect" sortOrder="10">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Store Views</label>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\StoreView"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="customer_group_ids" formElement="multiselect" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Customer Groups</label>
+                <notice translate="true">Leave empty for all groups.</notice>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\CustomerGroup"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="segment_ids" formElement="multiselect" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Customer Segments</label>
+                <notice translate="true">Leave empty for all shoppers. The unit is shown only to members of a selected segment.</notice>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\Segment"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="merchandising" sortOrder="30">
+        <settings>
+            <label translate="true">Merchandising Controls</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="min_score" formElement="input" sortOrder="10">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Minimum Score</label>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Suppress low-confidence products (0 = off). Pinned products are exempt.</notice>
+            </settings>
+        </field>
+        <field name="pinned_skus" formElement="textarea" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Pinned SKUs</label>
+                <notice translate="true">One per line as SKU:slot, e.g. 24-MB01:1. Pinned products still respect exclusions and stock rules.</notice>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>4</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+        <field name="excluded_skus" formElement="textarea" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Excluded SKUs</label>
+                <notice translate="true">One per line or comma-separated.</notice>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>4</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+        <field name="excluded_category_ids" formElement="input" sortOrder="40">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Excluded Category IDs</label>
+                <notice translate="true">Comma-separated.</notice>
+            </settings>
+        </field>
+        <field name="complementary_map" formElement="textarea" sortOrder="50">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Complementary Category Map</label>
+                <notice translate="true">Complete the Look units: one rule per line as source_category_id:target_ids, e.g. 20:23,24 or *:23 for any source.</notice>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>4</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

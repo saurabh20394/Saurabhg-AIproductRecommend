@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="checkout_cart_product_add_after">
+        <observer name="saurabhg_airecommend_add_to_cart" instance="Saurabhg\AIproductRecommend\Observer\AddToCartObserver"/>
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="saurabhg_airecommend_remove_from_cart" instance="Saurabhg\AIproductRecommend\Observer\RemoveFromCartObserver"/>
+    </event>
+    <event name="wishlist_add_product">
+        <observer name="saurabhg_airecommend_wishlist_add" instance="Saurabhg\AIproductRecommend\Observer\WishlistAddObserver"/>
+    </event>
+    <event name="customer_login">
+        <observer name="saurabhg_airecommend_profile_merge" instance="Saurabhg\AIproductRecommend\Observer\CustomerLoginObserver"/>
+    </event>
+</config>

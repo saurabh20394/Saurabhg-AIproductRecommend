@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!-- incremental catalog synchronization -->
+    <event name="catalog_product_save_after">
+        <observer name="saurabhg_airecommend_product_save" instance="Saurabhg\AIproductRecommend\Observer\ProductSaveObserver"/>
+    </event>
+    <event name="catalog_product_attribute_update_before">
+        <observer name="saurabhg_airecommend_product_mass_update" instance="Saurabhg\AIproductRecommend\Observer\ProductSaveObserver"/>
+    </event>
+    <event name="catalog_product_delete_after">
+        <observer name="saurabhg_airecommend_product_delete" instance="Saurabhg\AIproductRecommend\Observer\ProductDeleteObserver"/>
+    </event>
+
+    <!-- purchases (all checkout channels) -->
+    <event name="checkout_submit_all_after">
+        <observer name="saurabhg_airecommend_purchase" instance="Saurabhg\AIproductRecommend\Observer\OrderPlaceObserver"/>
+    </event>
+
+    <!-- privacy: deletion cascades to derived data -->
+    <event name="customer_delete_before">
+        <observer name="saurabhg_airecommend_customer_delete" instance="Saurabhg\AIproductRecommend\Observer\CustomerDeleteObserver"/>
+    </event>
+
+    <!-- merchant configuration changes invalidate stored results -->
+    <event name="saurabhg_airecommend_unit_save_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_unit_delete_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_rule_save_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_rule_delete_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_campaign_save_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_campaign_delete_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_segment_save_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_segment_delete_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_experiment_save_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+    <event name="saurabhg_airecommend_experiment_delete_after">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+</config>

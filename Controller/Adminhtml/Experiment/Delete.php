@@ -1,0 +1,34 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+declare(strict_types=1);
+
+namespace Saurabhg\AIproductRecommend\Controller\Adminhtml\Experiment;
+
+use Magento\Backend\App\Action\Context;
+use Saurabhg\AIproductRecommend\Controller\Adminhtml\AbstractDelete;
+use Saurabhg\AIproductRecommend\Model\ExperimentFactory;
+use Saurabhg\AIproductRecommend\Model\ResourceModel\Experiment as EntityResource;
+
+/**
+ * Delete of a a/b experiment
+ */
+class Delete extends AbstractDelete
+{
+    public const ADMIN_RESOURCE = 'Saurabhg_AIproductRecommend::experiments';
+    protected const ENTITY_LABEL = 'A/B Experiment';
+
+    /**
+     * @param Context $context
+     * @param ExperimentFactory $modelFactory
+     * @param EntityResource $resource
+     */
+    public function __construct(Context $context, ExperimentFactory $modelFactory, EntityResource $resource)
+    {
+        parent::__construct($context, $modelFactory, $resource);
+    }
+}

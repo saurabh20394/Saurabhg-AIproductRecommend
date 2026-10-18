@@ -1,0 +1,401 @@
+{
+    "ai_recommendation_unit": {
+        "column": {
+            "entity_id": true,
+            "code": true,
+            "title": true,
+            "type": true,
+            "status": true,
+            "store_ids": true,
+            "placement": true,
+            "position": true,
+            "product_count": true,
+            "min_score": true,
+            "fallback_type": true,
+            "customer_group_ids": true,
+            "segment_ids": true,
+            "show_reason": true,
+            "pinned_skus": true,
+            "excluded_skus": true,
+            "excluded_category_ids": true,
+            "complementary_map": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_UNIT_PLACEMENT_STATUS": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_RECOMMENDATION_UNIT_CODE": true
+        }
+    },
+    "ai_recommendation_rule": {
+        "column": {
+            "rule_id": true,
+            "name": true,
+            "status": true,
+            "priority": true,
+            "stop_further": true,
+            "store_ids": true,
+            "customer_group_ids": true,
+            "unit_codes": true,
+            "from_date": true,
+            "to_date": true,
+            "conditions": true,
+            "actions": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_RULE_STATUS_PRIORITY": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_recommendation_campaign": {
+        "column": {
+            "campaign_id": true,
+            "name": true,
+            "status": true,
+            "store_ids": true,
+            "unit_codes": true,
+            "segment_ids": true,
+            "start_at": true,
+            "end_at": true,
+            "boost_skus": true,
+            "boost_category_ids": true,
+            "boost_amount": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_CAMPAIGN_STATUS_START_AT_END_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_customer_segment": {
+        "column": {
+            "segment_id": true,
+            "name": true,
+            "status": true,
+            "match_type": true,
+            "description": true,
+            "conditions": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_ab_experiment": {
+        "column": {
+            "experiment_id": true,
+            "name": true,
+            "unit_code": true,
+            "status": true,
+            "store_ids": true,
+            "start_at": true,
+            "end_at": true,
+            "description": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_AB_EXPERIMENT_UNIT_CODE_STATUS": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_ab_variant": {
+        "column": {
+            "variant_id": true,
+            "experiment_id": true,
+            "code": true,
+            "name": true,
+            "allocation": true,
+            "is_control": true,
+            "configuration": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_AB_VARIANT_EXPERIMENT_ID_AI_AB_EXPERIMENT_EXPERIMENT_ID": true,
+            "AI_AB_VARIANT_EXPERIMENT_ID_CODE": true
+        }
+    },
+    "ai_ab_assignment": {
+        "column": {
+            "assignment_id": true,
+            "experiment_id": true,
+            "variant_id": true,
+            "subject_key": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_AB_ASSIGNMENT_EXPERIMENT_ID_AI_AB_EXPERIMENT_EXPERIMENT_ID": true,
+            "AI_AB_ASSIGNMENT_VARIANT_ID_AI_AB_VARIANT_VARIANT_ID": true,
+            "AI_AB_ASSIGNMENT_EXPERIMENT_ID_SUBJECT_KEY": true
+        }
+    },
+    "ai_customer_profile": {
+        "column": {
+            "profile_id": true,
+            "customer_id": true,
+            "visitor_id": true,
+            "profile_type": true,
+            "store_id": true,
+            "features_json": true,
+            "event_count": true,
+            "merged_into": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_CUSTOMER_PROFILE_UPDATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_CUSTOMER_PROFILE_CUSTOMER_ID": true,
+            "AI_CUSTOMER_PROFILE_VISITOR_ID": true,
+            "AI_CUSTOMER_PROFILE_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID": true
+        }
+    },
+    "ai_recommendation_event": {
+        "column": {
+            "event_id": true,
+            "event_uuid": true,
+            "event_type": true,
+            "subject_id": true,
+            "sku": true,
+            "category_id": true,
+            "search_query": true,
+            "qty": true,
+            "revenue": true,
+            "order_id": true,
+            "visitor_id": true,
+            "customer_id": true,
+            "store_id": true,
+            "unit_code": true,
+            "position": true,
+            "experiment_id": true,
+            "variant_id": true,
+            "source": true,
+            "created_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_EVENT_EVENT_TYPE_CREATED_AT": true,
+            "AI_RECOMMENDATION_EVENT_VISITOR_ID_CREATED_AT": true,
+            "AI_RECOMMENDATION_EVENT_CUSTOMER_ID_CREATED_AT": true,
+            "AI_RECOMMENDATION_EVENT_SUBJECT_ID_EVENT_TYPE": true,
+            "AI_RECOMMENDATION_EVENT_CREATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_RECOMMENDATION_EVENT_EVENT_UUID": true
+        }
+    },
+    "ai_recommendation_impression": {
+        "column": {
+            "id": true,
+            "event_uuid": true,
+            "request_id": true,
+            "unit_code": true,
+            "product_id": true,
+            "position": true,
+            "visitor_id": true,
+            "customer_id": true,
+            "experiment_id": true,
+            "variant_id": true,
+            "store_id": true,
+            "created_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_IMPRESSION_CREATED_AT_UNIT_CODE": true,
+            "AI_RECOMMENDATION_IMPRESSION_VISITOR_ID": true,
+            "AI_RECOMMENDATION_IMPRESSION_CUSTOMER_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_RECOMMENDATION_IMPRESSION_EVENT_UUID": true
+        }
+    },
+    "ai_recommendation_click": {
+        "column": {
+            "id": true,
+            "event_uuid": true,
+            "request_id": true,
+            "unit_code": true,
+            "product_id": true,
+            "position": true,
+            "visitor_id": true,
+            "customer_id": true,
+            "experiment_id": true,
+            "variant_id": true,
+            "store_id": true,
+            "created_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_CLICK_VISITOR_ID_PRODUCT_ID_CREATED_AT": true,
+            "AI_RECOMMENDATION_CLICK_CUSTOMER_ID_PRODUCT_ID_CREATED_AT": true,
+            "AI_RECOMMENDATION_CLICK_CREATED_AT_UNIT_CODE": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_RECOMMENDATION_CLICK_EVENT_UUID": true
+        }
+    },
+    "ai_recommendation_conversion": {
+        "column": {
+            "id": true,
+            "order_id": true,
+            "order_item_id": true,
+            "unit_code": true,
+            "product_id": true,
+            "qty": true,
+            "revenue": true,
+            "visitor_id": true,
+            "customer_id": true,
+            "experiment_id": true,
+            "variant_id": true,
+            "store_id": true,
+            "attribution_type": true,
+            "created_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_CONVERSION_CREATED_AT_UNIT_CODE": true,
+            "AI_RECOMMENDATION_CONVERSION_ORDER_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_RECOMMENDATION_CONVERSION_ORDER_ITEM_ID": true
+        }
+    },
+    "ai_recommendation_analytics_daily": {
+        "column": {
+            "id": true,
+            "period": true,
+            "store_id": true,
+            "unit_code": true,
+            "experiment_id": true,
+            "variant_id": true,
+            "impressions": true,
+            "clicks": true,
+            "add_to_carts": true,
+            "orders": true,
+            "items": true,
+            "revenue": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "UNQ_5C7FB766EFA4E659133AA3011F716F66": true
+        }
+    },
+    "ai_recommendation_result": {
+        "column": {
+            "result_id": true,
+            "context_hash": true,
+            "unit_code": true,
+            "store_id": true,
+            "product_ids": true,
+            "payload": true,
+            "source": true,
+            "model_version": true,
+            "generated_at": true,
+            "expires_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_RESULT_EXPIRES_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "AI_RECOMMENDATION_RESULT_CONTEXT_HASH": true
+        }
+    },
+    "ai_recommendation_product_stat": {
+        "column": {
+            "store_id": true,
+            "product_id": true,
+            "views": true,
+            "carts": true,
+            "wishlists": true,
+            "purchases": true,
+            "popularity_score": true,
+            "trending_score": true,
+            "conversion_score": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_PRODUCT_STAT_STORE_ID_POPULARITY_SCORE": true,
+            "AI_RECOMMENDATION_PRODUCT_STAT_STORE_ID_TRENDING_SCORE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_recommendation_product_relation": {
+        "column": {
+            "store_id": true,
+            "relation_type": true,
+            "product_id": true,
+            "related_id": true,
+            "score": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_PRODUCT_RELATION_RELATED_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_recommendation_product_index": {
+        "column": {
+            "store_id": true,
+            "product_id": true,
+            "sku": true,
+            "content_hash": true,
+            "payload_hash": true,
+            "vector": true,
+            "model": true,
+            "model_version": true,
+            "dimensions": true,
+            "status": true,
+            "sync_status": true,
+            "attempts": true,
+            "last_error": true,
+            "indexed_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_PRODUCT_INDEX_STATUS": true,
+            "AI_RECOMMENDATION_PRODUCT_INDEX_PRODUCT_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "ai_recommendation_error_log": {
+        "column": {
+            "log_id": true,
+            "job_type": true,
+            "correlation_id": true,
+            "message": true,
+            "payload": true,
+            "attempts": true,
+            "status": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "AI_RECOMMENDATION_ERROR_LOG_STATUS": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

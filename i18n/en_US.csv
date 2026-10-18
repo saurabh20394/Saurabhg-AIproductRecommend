@@ -1,0 +1,488 @@
+Back,Back
+Delete,Delete
+"Are you sure you want to delete this record?","Are you sure you want to delete this record?"
+"Save and Continue Edit","Save and Continue Edit"
+Save,Save
+"Recommended for you","Recommended for you"
+"This %1 no longer exists.","This %1 no longer exists."
+"The %1 has been deleted.","The %1 has been deleted."
+"AI Recommendations","AI Recommendations"
+"Edit %1 ""%2""","Edit %1 ""%2"""
+"New %1","New %1"
+"A total of %1 record(s) have been updated.","A total of %1 record(s) have been updated."
+"The %1 has been saved.","The %1 has been saved."
+"Something went wrong while saving the %1.","Something went wrong while saving the %1."
+"Invalid date ""%1"".","Invalid date ""%1""."
+"Campaign name is required.","Campaign name is required."
+"Boost amount must be a number between -10 and 10.","Boost amount must be a number between -10 and 10."
+"End date must be after the start date.","End date must be after the start date."
+"Enter boosted SKUs or category IDs.","Enter boosted SKUs or category IDs."
+"Embeddings OK: %1 (%2 dimensions, %3 ms).","Embeddings OK: %1 (%2 dimensions, %3 ms)."
+"Embeddings failed: %1","Embeddings failed: %1"
+"Recommendation API OK (%1 items, model %2).","Recommendation API OK (%1 items, model %2)."
+"Recommendation API failed: %1","Recommendation API failed: %1"
+"Experiment name is required.","Experiment name is required."
+"Select an existing recommendation unit.","Select an existing recommendation unit."
+"Variant codes must be unique (letters, digits, ""_"" or ""-"").","Variant codes must be unique (letters, digits, ""_"" or ""-"")."
+"Allocation must be between 0 and 100.","Allocation must be between 0 and 100."
+"An experiment needs a control and at least one variant.","An experiment needs a control and at least one variant."
+"Mark exactly one variant as control.","Mark exactly one variant as control."
+"Variant allocations must add up to 100 (currently %1).","Variant allocations must add up to 100 (currently %1)."
+"Variant ""%1"" has an invalid type.","Variant ""%1"" has an invalid type."
+"Variant ""%1"" weights must be a JSON object, e.g. {""similarity"":0.6}.","Variant ""%1"" weights must be a JSON object, e.g. {""similarity"":0.6}."
+"Variant ""%1"" has an unknown weight ""%2"".","Variant ""%1"" has an unknown weight ""%2""."
+"%1 product(s) queued for embedding and sync.","%1 product(s) queued for embedding and sync."
+"%1 failed product(s) will be retried.","%1 failed product(s) will be retried."
+"Processed: %1 embedded, %2 unchanged, %3 skipped, %4 failed.","Processed: %1 embedded, %2 unchanged, %3 skipped, %4 failed."
+"Popularity, trending, co-purchase, co-view and analytics were recalculated.","Popularity, trending, co-purchase, co-view and analytics were recalculated."
+"Unknown action.","Unknown action."
+"%1 error(s) marked as resolved.","%1 error(s) marked as resolved."
+"%1 product(s) failed again.","%1 product(s) failed again."
+"Retried: %1 succeeded, %2 failed.","Retried: %1 succeeded, %2 failed."
+"Rule name is required.","Rule name is required."
+"Every condition needs a valid field and operator.","Every condition needs a valid field and operator."
+"Add at least one action.","Add at least one action."
+"Action #%1 has an invalid type.","Action #%1 has an invalid type."
+"Action #%1 amount must be numeric.","Action #%1 amount must be numeric."
+"Action #%1 needs a valid attribute code.","Action #%1 needs a valid attribute code."
+"""To"" date must be after ""From"" date.","""To"" date must be after ""From"" date."
+"Segment name is required.","Segment name is required."
+"Add at least one condition.","Add at least one condition."
+"Unit code must be 2-64 letters, digits, ""_"" or ""-"".","Unit code must be 2-64 letters, digits, ""_"" or ""-""."
+"Unit code ""%1"" is already used.","Unit code ""%1"" is already used."
+"Select a valid recommendation type.","Select a valid recommendation type."
+"Select a valid placement.","Select a valid placement."
+"Select a valid fallback strategy.","Select a valid fallback strategy."
+"Product count must be between 1 and 50.","Product count must be between 1 and 50."
+"Minimum score must be between 0 and 10.","Minimum score must be between 0 and 10."
+"No recommendation profile exists for this customer.","No recommendation profile exists for this customer."
+"AI service URL is not configured.","AI service URL is not configured."
+"AI service request failed: %1","AI service request failed: %1"
+"AI service returned HTTP %1: %2","AI service returned HTTP %1: %2"
+"AI service returned an invalid JSON response.","AI service returned an invalid JSON response."
+"Embedding response does not match the number of inputs.","Embedding response does not match the number of inputs."
+"Embedding response contains an invalid vector.","Embedding response contains an invalid vector."
+"Embedding response has inconsistent dimensions.","Embedding response has inconsistent dimensions."
+"Recommendation response has no ""recommendations"" list.","Recommendation response has no ""recommendations"" list."
+"Invalid recommendation unit code.","Invalid recommendation unit code."
+"Invalid recommendation type.","Invalid recommendation type."
+"Limit must be between 1 and 50.","Limit must be between 1 and 50."
+"Invalid visitor ID.","Invalid visitor ID."
+"Invalid product SKU.","Invalid product SKU."
+"Frequently bought together","Frequently bought together"
+"Shoppers also viewed","Shoppers also viewed"
+"Similar to this item","Similar to this item"
+"Recently viewed","Recently viewed"
+"Based on your browsing","Based on your browsing"
+"Popular choice","Popular choice"
+"Trending now","Trending now"
+"Goes well with your selection","Goes well with your selection"
+"New arrival","New arrival"
+Featured,Featured
+"Magento Cookie Restriction Mode","Magento Cookie Restriction Mode"
+"Custom Consent Cookie (CMP)","Custom Consent Cookie (CMP)"
+"No Consent Required","No Consent Required"
+Name,Name
+Brand,Brand
+"Category Names","Category Names"
+"Short Description","Short Description"
+Description,Description
+"Meta Keywords","Meta Keywords"
+Draft,Draft
+Running,Running
+Stopped,Stopped
+"Popular Products","Popular Products"
+"Trending Products","Trending Products"
+"New Arrivals","New Arrivals"
+"Hide Unit","Hide Unit"
+"All conditions (AND)","All conditions (AND)"
+"Any condition (OR)","Any condition (OR)"
+is,is
+"is not","is not"
+"is one of (comma-separated)","is one of (comma-separated)"
+"is not one of (comma-separated)","is not one of (comma-separated)"
+"greater than","greater than"
+"greater than or equal","greater than or equal"
+"less than","less than"
+"less than or equal","less than or equal"
+contains,contains
+"Homepage - Top of Content","Homepage - Top of Content"
+"Homepage - Bottom of Content","Homepage - Bottom of Content"
+"Category Page - Above Products","Category Page - Above Products"
+"Category Page - Below Products","Category Page - Below Products"
+"Product Page - Below Product Info","Product Page - Below Product Info"
+"Product Page - Bottom of Content","Product Page - Bottom of Content"
+"Shopping Cart - Bottom","Shopping Cart - Bottom"
+"Order Success Page","Order Success Page"
+"CMS Widget / API Only","CMS Widget / API Only"
+"Local (built-in, no external service)","Local (built-in, no external service)"
+"HTTP (OpenAI-compatible embeddings API)","HTTP (OpenAI-compatible embeddings API)"
+"Boost SKUs (value: SKUs, amount: boost)","Boost SKUs (value: SKUs, amount: boost)"
+"Boost Category IDs (value: IDs, amount: boost)","Boost Category IDs (value: IDs, amount: boost)"
+"Boost Brands (value: labels or option IDs, amount: boost)","Boost Brands (value: labels or option IDs, amount: boost)"
+"Boost by Numeric Attribute e.g. margin (value: attribute code, amount: multiplier)","Boost by Numeric Attribute e.g. margin (value: attribute code, amount: multiplier)"
+"Boost Products with Active Special Price (amount: boost)","Boost Products with Active Special Price (amount: boost)"
+"Boost New Products (value: days, amount: boost)","Boost New Products (value: days, amount: boost)"
+"Boost Low Stock (amount: boost, negative to penalize)","Boost Low Stock (amount: boost, negative to penalize)"
+"Pin SKU (value: SKU, amount: position)","Pin SKU (value: SKU, amount: position)"
+"Exclude SKUs (value: SKUs)","Exclude SKUs (value: SKUs)"
+"Exclude Category IDs (value: IDs)","Exclude Category IDs (value: IDs)"
+"Exclude Brands (value: labels or option IDs)","Exclude Brands (value: labels or option IDs)"
+"Exclude Product Types (value: simple, configurable, ...)","Exclude Product Types (value: simple, configurable, ...)"
+"Exclude Out of Stock","Exclude Out of Stock"
+"Exclude Low Stock","Exclude Low Stock"
+"Exclude Price Below (value: amount)","Exclude Price Below (value: amount)"
+"Exclude Price Above (value: amount)","Exclude Price Above (value: amount)"
+"Page Type (home, category, product, cart, success, api)","Page Type (home, category, product, cart, success, api)"
+"Customer Group ID","Customer Group ID"
+"Customer Segment ID","Customer Segment ID"
+"Customer Logged In (1/0)","Customer Logged In (1/0)"
+"Current Product SKU","Current Product SKU"
+"Current Category ID (page or product categories)","Current Category ID (page or product categories)"
+"Cart Contains SKU","Cart Contains SKU"
+"Cart Items Count","Cart Items Count"
+disabled,disabled
+"Logged In (1/0)","Logged In (1/0)"
+"Profile Type (anonymous, guest, customer)","Profile Type (anonymous, guest, customer)"
+"Number of Orders","Number of Orders"
+"Lifetime Revenue","Lifetime Revenue"
+"Average Order Value","Average Order Value"
+"Days Since Last Order","Days Since Last Order"
+"Number of Interactions","Number of Interactions"
+"Top Affinity Category IDs","Top Affinity Category IDs"
+"Top Affinity Brands","Top Affinity Brands"
+"Average Viewed Price","Average Viewed Price"
+Enabled,Enabled
+Disabled,Disabled
+"Most Viewed / Popular","Most Viewed / Popular"
+Trending,Trending
+"Recently Viewed","Recently Viewed"
+"Frequently Bought Together","Frequently Bought Together"
+"Customers Also Viewed","Customers Also Viewed"
+"AI Similar Products","AI Similar Products"
+"Recommended For You","Recommended For You"
+"Complete the Look / Complementary","Complete the Look / Complementary"
+"Hybrid (all signals)","Hybrid (all signals)"
+"Could not save the recommendation unit: %1","Could not save the recommendation unit: %1"
+"Recommendation unit with ID ""%1"" does not exist.","Recommendation unit with ID ""%1"" does not exist."
+"Recommendation unit ""%1"" does not exist.","Recommendation unit ""%1"" does not exist."
+"Could not delete the recommendation unit: %1","Could not delete the recommendation unit: %1"
+Edit,Edit
+Results,Results
+From,From
+To,To
+"Store View","Store View"
+"All Store Views","All Store Views"
+Apply,Apply
+"Days are UTC. Module version %1.","Days are UTC. Module version %1."
+"Revenue Attributed","Revenue Attributed"
+"%1 attributed orders","%1 attributed orders"
+CTR,CTR
+"%1 clicks / %2 impressions","%1 clicks / %2 impressions"
+Conversion,Conversion
+"Add-to-cart rate %1%","Add-to-cart rate %1%"
+"AOV Lift","AOV Lift"
+"%1 vs %2","%1 vs %2"
+"Recommendation Performance","Recommendation Performance"
+Unit,Unit
+Impressions,Impressions
+Clicks,Clicks
+"Add to Cart","Add to Cart"
+Orders,Orders
+Revenue,Revenue
+"No recommendation activity in this period yet.","No recommendation activity in this period yet."
+"Daily Trend","Daily Trend"
+"Daily attributed revenue and clicks","Daily attributed revenue and clicks"
+clicks,clicks
+"System Health","System Health"
+"This experiment no longer exists.","This experiment no longer exists."
+Experiment,Experiment
+"Period (UTC)","Period (UTC)"
+Variant,Variant
+Traffic,Traffic
+Assigned,Assigned
+AOV,AOV
+"Revenue / Visitor","Revenue / Visitor"
+control,control
+"Lift is relative to the control variant. Check statistical significance before concluding; small samples are noisy.","Lift is relative to the control variant. Check statistical significance before concluding; small samples are noisy."
+"Queue Full Reindex","Queue Full Reindex"
+"Process Pending Now","Process Pending Now"
+"Retry Failed Products","Retry Failed Products"
+"Recalculate Signals","Recalculate Signals"
+Dependencies,Dependencies
+"Catalog Embedding Index","Catalog Embedding Index"
+Module,Module
+Products,Products
+Indexed,Indexed
+Skipped,Skipped
+Pending,Pending
+Failed,Failed
+Progress,Progress
+Similar,Similar
+"Bought Together","Bought Together"
+"Also Viewed","Also Viewed"
+"Consumers: saurabhgAiRecommendEvent, saurabhgAiRecommendProductIndex (run by cron, or bin/magento queue:consumers:start). Pending products are also indexed every 10 minutes by cron.","Consumers: saurabhgAiRecommendEvent, saurabhgAiRecommendProductIndex (run by cron, or bin/magento queue:consumers:start). Pending products are also indexed every 10 minutes by cron."
+"Recent Product Index Failures","Recent Product Index Failures"
+Store,Store
+SKU,SKU
+Attempts,Attempts
+Error,Error
+Updated,Updated
+"Job Errors (dead-letter)","Job Errors (dead-letter)"
+"Export CSV","Export CSV"
+Day,Day
+"ATC Rate","ATC Rate"
+"No data for this period.","No data for this period."
+"Runs the live recommendation pipeline for a sample context without cache and without creating experiment assignments. Use it to preview business rules before enabling them and to see why a product is (not) recommended.","Runs the live recommendation pipeline for a sample context without cache and without creating experiment assignments. Use it to preview business rules before enabling them and to see why a product is (not) recommended."
+"-- by type --","-- by type --"
+"Type (without unit)","Type (without unit)"
+"Page Type","Page Type"
+"Product SKU","Product SKU"
+"Category ID","Category ID"
+"Cart SKUs","Cart SKUs"
+"Customer ID","Customer ID"
+"Visitor ID","Visitor ID"
+"Customer Group (override)","Customer Group (override)"
+"-- from customer --","-- from customer --"
+Limit,Limit
+Simulate,Simulate
+Result,Result
+Source,Source
+fallback,fallback
+Type,Type
+"Request ID","Request ID"
+"Customer group / segments","Customer group / segments"
+"Experiment variant","Experiment variant"
+"Candidates / eligible","Candidates / eligible"
+Weights,Weights
+"Rules applied","Rules applied"
+"Campaigns applied","Campaigns applied"
+"Remote AI","Remote AI"
+"Unit fallback used","Unit fallback used"
+Final,Final
+Boost,Boost
+Reason,Reason
+"No products would be shown.","No products would be shown."
+"Excluded Candidates","Excluded Candidates"
+"Validate Connection","Validate Connection"
+"Save the configuration first; the saved values of this scope are tested.","Save the configuration first; the saved values of this scope are tested."
+"Carousel navigation","Carousel navigation"
+"Previous products","Previous products"
+"Next products","Next products"
+"View Options","View Options"
+"Out of stock","Out of stock"
+Testing...,Testing...
+"Request failed.","Request failed."
+Dashboard,Dashboard
+"Recommendation Units","Recommendation Units"
+"Business Rules","Business Rules"
+Campaigns,Campaigns
+"Customer Segments","Customer Segments"
+"A/B Experiments","A/B Experiments"
+"Simulator / Explain","Simulator / Explain"
+Reports,Reports
+"Index & Queue Monitor","Index & Queue Monitor"
+Configuration,Configuration
+"Saurabh Extensions","Saurabh Extensions"
+"AI Product Recommendations","AI Product Recommendations"
+General,General
+"Manage units, rules, segments and experiments in <strong>Marketing &rarr; AI Recommendations</strong>. When disabled for a store view, tracking and recommendation rendering stop without affecting the storefront.","Manage units, rules, segments and experiments in <strong>Marketing &rarr; AI Recommendations</strong>. When disabled for a store view, tracking and recommendation rendering stop without affecting the storefront."
+Enable,Enable
+"Debug Logging","Debug Logging"
+"Writes verbose, sanitized entries to var/log/ai_recommend.log. Secrets and customer PII are never logged.","Writes verbose, sanitized entries to var/log/ai_recommend.log. Secrets and customer PII are never logged."
+"Behavior Tracking & Consent","Behavior Tracking & Consent"
+"Enable Tracking","Enable Tracking"
+"Consent Mode","Consent Mode"
+"<strong>Magento Cookie Restriction</strong> follows Stores &gt; Configuration &gt; General &gt; Web &gt; Default Cookie Settings &gt; Cookie Restriction Mode. <strong>Custom Cookie</strong> integrates with a consent management platform (CMP).","<strong>Magento Cookie Restriction</strong> follows Stores &gt; Configuration &gt; General &gt; Web &gt; Default Cookie Settings &gt; Cookie Restriction Mode. <strong>Custom Cookie</strong> integrates with a consent management platform (CMP)."
+"Consent Cookie Name","Consent Cookie Name"
+"Consent Cookie Must Contain","Consent Cookie Must Contain"
+"Optional. Leave empty to accept any non-empty cookie value.","Optional. Leave empty to accept any non-empty cookie value."
+"Track Anonymous Visitors","Track Anonymous Visitors"
+"Uses a random pseudonymous first-party visitor ID (cookie aipr_vid), set only after consent.","Uses a random pseudonymous first-party visitor ID (cookie aipr_vid), set only after consent."
+"Personalize for Logged-in Customers","Personalize for Logged-in Customers"
+"Track Category Views","Track Category Views"
+"Track Search Queries","Track Search Queries"
+"Track Wishlist Actions","Track Wishlist Actions"
+"Process Events Asynchronously","Process Events Asynchronously"
+"Recommended. Events are published to the saurabhg.airecommend.event queue (consumer: saurabhgAiRecommendEvent). Set to No only for development.","Recommended. Events are published to the saurabhg.airecommend.event queue (consumer: saurabhgAiRecommendEvent). Set to No only for development."
+"Public Event Rate Limit (per minute)","Public Event Rate Limit (per minute)"
+"Maximum events accepted per visitor/IP per minute on public endpoints.","Maximum events accepted per visitor/IP per minute on public endpoints."
+"Maximum Events per Request","Maximum Events per Request"
+"Privacy & Data Retention","Privacy & Data Retention"
+"Behavioral Event Retention (days)","Behavioral Event Retention (days)"
+"Raw events, impressions and clicks older than this are purged daily.","Raw events, impressions and clicks older than this are purged daily."
+"Aggregated Analytics Retention (days)","Aggregated Analytics Retention (days)"
+"Inactive Anonymous Profile Retention (days)","Inactive Anonymous Profile Retention (days)"
+"Attribution Window (days)","Attribution Window (days)"
+"A purchased item is attributed to the latest recommendation click on that product within this window.","A purchased item is attributed to the latest recommendation click on that product within this window."
+"Data Processing Summary","Data Processing Summary"
+"AI Provider","AI Provider"
+"<strong>Local</strong> mode needs no external service: lexical hashing embeddings and the built-in hybrid ranker run inside Magento. <strong>HTTP</strong> mode uses any OpenAI-compatible <code>/v1/embeddings</code> API (OpenAI, an Azure gateway, Ollama, vLLM, LiteLLM or your own FastAPI service). Prefer setting the API key through app/etc/env.php or the environment variable CONFIG__DEFAULT__SAURABHG_AIRECOMMEND__AI__API_KEY.","<strong>Local</strong> mode needs no external service: lexical hashing embeddings and the built-in hybrid ranker run inside Magento. <strong>HTTP</strong> mode uses any OpenAI-compatible <code>/v1/embeddings</code> API (OpenAI, an Azure gateway, Ollama, vLLM, LiteLLM or your own FastAPI service). Prefer setting the API key through app/etc/env.php or the environment variable CONFIG__DEFAULT__SAURABHG_AIRECOMMEND__AI__API_KEY."
+"Embedding Provider","Embedding Provider"
+"AI Service Base URL","AI Service Base URL"
+"e.g. https://api.openai.com or https://ai.example.com (no trailing slash).","e.g. https://api.openai.com or https://ai.example.com (no trailing slash)."
+"API Key","API Key"
+"Embeddings Path","Embeddings Path"
+"Embedding Model","Embedding Model"
+"Use Remote Recommendation API","Use Remote Recommendation API"
+"Calls POST {base}{path} with the contract documented in README. Magento eligibility, rules, pins and exclusions are always applied to the remote result. Falls back to the local engine on timeout or error.","Calls POST {base}{path} with the contract documented in README. Magento eligibility, rules, pins and exclusions are always applied to the remote result. Falls back to the local engine on timeout or error."
+"Recommendation API Path","Recommendation API Path"
+"Sync Catalog to AI Service","Sync Catalog to AI Service"
+"Pushes changed product payloads to POST {base}{catalog path}.","Pushes changed product payloads to POST {base}{catalog path}."
+"Catalog Sync Path","Catalog Sync Path"
+"Storefront Request Timeout (ms)","Storefront Request Timeout (ms)"
+"Remote ranking calls are aborted after this time and the local engine answers instead.","Remote ranking calls are aborted after this time and the local engine answers instead."
+"Batch Job Timeout (seconds)","Batch Job Timeout (seconds)"
+"Circuit Breaker Failure Threshold","Circuit Breaker Failure Threshold"
+"Consecutive failures before the AI service is marked unhealthy and skipped.","Consecutive failures before the AI service is marked unhealthy and skipped."
+"Circuit Breaker Cooldown (seconds)","Circuit Breaker Cooldown (seconds)"
+"Catalog & Embeddings","Catalog & Embeddings"
+"Embedding Content","Embedding Content"
+"Only catalog content is embedded. Customer data is excluded by design.","Only catalog content is embedded. Customer data is excluded by design."
+"Additional Attributes","Additional Attributes"
+"Comma-separated product attribute codes added to the embedding and sync payload, e.g. color,material.","Comma-separated product attribute codes added to the embedding and sync payload, e.g. color,material."
+"Brand Attribute Code","Brand Attribute Code"
+"Used for brand affinity, boosts and exclusions.","Used for brand affinity, boosts and exclusions."
+"Include Stock Quantity in Sync Payload","Include Stock Quantity in Sync Payload"
+"Embedding Batch Size","Embedding Batch Size"
+"Similar Products Stored per Product (top-K)","Similar Products Stored per Product (top-K)"
+"Max Vector Comparisons per Product","Max Vector Comparisons per Product"
+"Local vector search compares each product against products sharing its categories, up to this limit. Use an external vector DB through the remote API for very large catalogs.","Local vector search compares each product against products sharing its categories, up to this limit. Use an external vector DB through the remote API for very large catalogs."
+Algorithms,Algorithms
+"Popularity Window (days)","Popularity Window (days)"
+"Trending Window (days)","Trending Window (days)"
+"Trending Half-life (hours)","Trending Half-life (hours)"
+"Frequently Bought Together Window (days)","Frequently Bought Together Window (days)"
+"Also Viewed Window (days)","Also Viewed Window (days)"
+"Related Products Stored per Product","Related Products Stored per Product"
+"Profile Affinity Half-life (days)","Profile Affinity Half-life (days)"
+"Hybrid Ranking Weights","Hybrid Ranking Weights"
+"final_score = Σ weight × feature + merchant boost + campaign boost − penalty. Used by Hybrid and Recommended For You units; other unit types use type-specific weight profiles. A/B variants may override weights.","final_score = Σ weight × feature + merchant boost + campaign boost − penalty. Used by Hybrid and Recommended For You units; other unit types use type-specific weight profiles. A/B variants may override weights."
+"Behavior (co-purchase / co-view / recency)","Behavior (co-purchase / co-view / recency)"
+"Semantic Similarity","Semantic Similarity"
+"Customer Affinity","Customer Affinity"
+Popularity,Popularity
+Inventory,Inventory
+"Maximum Total Boost","Maximum Total Boost"
+"Absolute cap applied to the sum of rule and campaign boosts per product.","Absolute cap applied to the sum of rule and campaign boosts per product."
+"Diversity: Max Products per Category","Diversity: Max Products per Category"
+"0 disables the diversity cap.","0 disables the diversity cap."
+"Inventory & Exclusions","Inventory & Exclusions"
+"Exclude Out-of-Stock Products","Exclude Out-of-Stock Products"
+"Low Stock Threshold (qty)","Low Stock Threshold (qty)"
+"Globally Excluded SKUs","Globally Excluded SKUs"
+"One SKU per line or comma-separated. Products can also be excluded with the ""Exclude from AI Recommendations"" product attribute.","One SKU per line or comma-separated. Products can also be excluded with the ""Exclude from AI Recommendations"" product attribute."
+"Globally Excluded Category IDs","Globally Excluded Category IDs"
+"Comma-separated category IDs.","Comma-separated category IDs."
+"Excluded Product Types","Excluded Product Types"
+Caching,Caching
+"Result Cache TTL (seconds)","Result Cache TTL (seconds)"
+"Cache type ""AI Recommendations"" (uses Redis when the Magento default cache is configured for Redis). 0 disables result caching.","Cache type ""AI Recommendations"" (uses Redis when the Magento default cache is configured for Redis). 0 disables result caching."
+"Personalized Result Cache TTL (seconds)","Personalized Result Cache TTL (seconds)"
+"Last-good Result Fallback (hours)","Last-good Result Fallback (hours)"
+"Stored results are served when live generation fails.","Stored results are served when live generation fails."
+Storefront,Storefront
+"Show Recommendation Reasons","Show Recommendation Reasons"
+"Show Add to Cart","Show Add to Cart"
+"Expose Scores in REST/GraphQL","Expose Scores in REST/GraphQL"
+"Scores are never rendered in storefront HTML.","Scores are never rendered in storefront HTML."
+"Generated product recommendation results and unit lists","Generated product recommendation results and unit lists"
+"Lazy-loaded, personalized recommendation unit","Lazy-loaded, personalized recommendation unit"
+"Recommendation Unit","Recommendation Unit"
+"Units are managed in Marketing > AI Recommendations > Recommendation Units.","Units are managed in Marketing > AI Recommendations > Recommendation Units."
+Campaign,Campaign
+"Start Date","Start Date"
+"Starts at 00:00 store time.","Starts at 00:00 store time."
+"End Date","End Date"
+"Ends at 23:59 store time.","Ends at 23:59 store time."
+"Boosted Products","Boosted Products"
+SKUs,SKUs
+"One per line or comma-separated.","One per line or comma-separated."
+"Category IDs","Category IDs"
+Comma-separated.,Comma-separated.
+"Boost Amount","Boost Amount"
+"Added to the relevance score of matching products, e.g. 0.2.","Added to the relevance score of matching products, e.g. 0.2."
+Scope,Scope
+"Store Views","Store Views"
+"Leave empty for all units.","Leave empty for all units."
+"Leave empty for all shoppers.","Leave empty for all shoppers."
+"Add Campaign","Add Campaign"
+Disable,Disable
+"Delete the selected records?","Delete the selected records?"
+ID,ID
+Start,Start
+End,End
+Status,Status
+Retry,Retry
+"Mark Resolved","Mark Resolved"
+Job,Job
+"Correlation ID","Correlation ID"
+Created,Created
+"A/B Experiment","A/B Experiment"
+"Visitors are assigned only while Running and within the dates.","Visitors are assigned only while Running and within the dates."
+Hypothesis,Hypothesis
+Variants,Variants
+"Allocations must total 100 with exactly one control. Type override: any unit type code, or holdout (no recommendations). Weights JSON example: {""similarity"":0.6,""popularity"":0.2}.","Allocations must total 100 with exactly one control. Type override: any unit type code, or holdout (no recommendations). Weights JSON example: {""similarity"":0.6,""popularity"":0.2}."
+"Add Variant","Add Variant"
+Code,Code
+"Traffic %","Traffic %"
+Control,Control
+"Type Override (or holdout)","Type Override (or holdout)"
+"Product Count","Product Count"
+"Weights JSON","Weights JSON"
+Remove,Remove
+"Add A/B Experiment","Add A/B Experiment"
+"Delete the selected experiments and their assignments?","Delete the selected experiments and their assignments?"
+"Business Rule","Business Rule"
+Rule,Rule
+Priority,Priority
+"Higher priority runs first; exclusions always win over boosts; the first rule pinning a slot keeps it.","Higher priority runs first; exclusions always win over boosts; the first rule pinning a slot keeps it."
+"Stop Further Rules Processing","Stop Further Rules Processing"
+"Active From","Active From"
+"Active To","Active To"
+"Customer Groups","Customer Groups"
+"Leave empty for all groups.","Leave empty for all groups."
+"Conditions (all must match)","Conditions (all must match)"
+"No conditions = the rule always applies within its scope.","No conditions = the rule always applies within its scope."
+"Add Condition","Add Condition"
+Conditions,Conditions
+Field,Field
+Operator,Operator
+Value,Value
+Actions,Actions
+"Boost amounts are added to the 0-1 relevance score (capped by Maximum Total Boost). Use negative amounts to penalize.","Boost amounts are added to the 0-1 relevance score (capped by Maximum Total Boost). Use negative amounts to penalize."
+"Add Action","Add Action"
+Action,Action
+Amount,Amount
+"Add Business Rule","Add Business Rule"
+Units,Units
+"Customer Segment","Customer Segment"
+Segment,Segment
+Match,Match
+"Evaluated in real time from the derived (aggregate) profile; no raw personal data is used.","Evaluated in real time from the derived (aggregate) profile; no raw personal data is used."
+"Add Customer Segment","Add Customer Segment"
+"Unit Code","Unit Code"
+"Unique identifier used by widgets, REST (/V1/ai-recommendations/units/{code}) and GraphQL (unitCode).","Unique identifier used by widgets, REST (/V1/ai-recommendations/units/{code}) and GraphQL (unitCode)."
+Title,Title
+"Shown above the products (translatable per store through Magento translations).","Shown above the products (translatable per store through Magento translations)."
+"Recommendation Type","Recommendation Type"
+Placement,Placement
+"Automatic storefront position, or CMS widget / API only.","Automatic storefront position, or CMS widget / API only."
+"Sort Order in Placement","Sort Order in Placement"
+1-50,1-50
+"Fallback Strategy","Fallback Strategy"
+"Used when the primary algorithm returns nothing.","Used when the primary algorithm returns nothing."
+"Show Recommendation Reason","Show Recommendation Reason"
+"Scope & Targeting","Scope & Targeting"
+"Leave empty for all shoppers. The unit is shown only to members of a selected segment.","Leave empty for all shoppers. The unit is shown only to members of a selected segment."
+"Merchandising Controls","Merchandising Controls"
+"Minimum Score","Minimum Score"
+"Suppress low-confidence products (0 = off). Pinned products are exempt.","Suppress low-confidence products (0 = off). Pinned products are exempt."
+"Pinned SKUs","Pinned SKUs"
+"One per line as SKU:slot, e.g. 24-MB01:1. Pinned products still respect exclusions and stock rules.","One per line as SKU:slot, e.g. 24-MB01:1. Pinned products still respect exclusions and stock rules."
+"Excluded SKUs","Excluded SKUs"
+"Excluded Category IDs","Excluded Category IDs"
+"Complementary Category Map","Complementary Category Map"
+"Complete the Look units: one rule per line as source_category_id:target_ids, e.g. 20:23,24 or *:23 for any source.","Complete the Look units: one rule per line as source_category_id:target_ids, e.g. 20:23,24 or *:23 for any source."
+"Add Recommendation Unit","Add Recommendation Unit"
+"Sort Order","Sort Order"

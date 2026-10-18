@@ -1,0 +1,93 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * Accessible carousel of recommended products. Product links are canonical URLs (no tracking parameters);
+ * clicks / impressions are tracked by JavaScript from the data-aipr-* attributes.
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Saurabhg\AIproductRecommend\Block\Product\ListRenderer $block */
+/** @var \Magento\Framework\Escaper $escaper */
+$items = $block->getItems();
+if (!$items) {
+    return;
+}
+$headingId = $block->getHeadingId();
+$listId = $headingId . '-list';
+$showReason = $block->canShowReason();
+?>
+<section class="aipr-block block" aria-labelledby="<?= $escaper->escapeHtmlAttr($headingId) ?>">
+    <div class="aipr-block__header">
+        <h2 class="aipr-block__title block-title title" id="<?= $escaper->escapeHtmlAttr($headingId) ?>">
+            <?= $escaper->escapeHtml($block->getUnitTitle()) ?>
+        </h2>
+        <div class="aipr-block__nav" role="group" aria-label="<?= $escaper->escapeHtmlAttr(__('Carousel navigation')) ?>">
+            <button type="button" class="aipr-nav aipr-nav--prev" data-aipr-nav="-1"
+                    aria-controls="<?= $escaper->escapeHtmlAttr($listId) ?>"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Previous products')) ?>">&#8249;</button>
+            <button type="button" class="aipr-nav aipr-nav--next" data-aipr-nav="1"
+                    aria-controls="<?= $escaper->escapeHtmlAttr($listId) ?>"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Next products')) ?>">&#8250;</button>
+        </div>
+    </div>
+    <div class="aipr-block__content block-content products-grid">
+        <ol class="aipr-items product-items" id="<?= $escaper->escapeHtmlAttr($listId) ?>" tabindex="0"
+            aria-label="<?= $escaper->escapeHtmlAttr($block->getUnitTitle()) ?>">
+            <?php foreach ($items as $item): ?>
+                <?php $product = $block->getItemProduct($item);
+                if (!$product) {
+                    continue;
+                } ?>
+                <li class="aipr-item product-item"
+                    data-aipr-sku="<?= $escaper->escapeHtmlAttr($item->getSku()) ?>"
+                    data-aipr-pos="<?= (int)$item->getPosition() ?>">
+                    <div class="product-item-info">
+                        <a href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>" class="product photo product-item-photo"
+                           tabindex="-1" aria-hidden="true">
+                            <?= $block->getImage($product, 'category_page_grid')->toHtml() ?>
+                        </a>
+                        <div class="product details product-item-details">
+                            <?php if ($showReason): ?>
+                                <span class="aipr-reason"><?= $escaper->escapeHtml($item->getReasonLabel()) ?></span>
+                            <?php endif; ?>
+                            <strong class="product name product-item-name">
+                                <a class="product-item-link" href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>">
+                                    <?= $escaper->escapeHtml($product->getName()) ?>
+                                </a>
+                            </strong>
+                            <?= /* @noEscape */ $block->getProductPrice($product) ?>
+                            <div class="product actions product-item-actions">
+                                <?php if ($block->canAddToCart($product)): ?>
+                                    <?php $postParams = $block->getAddToCartPostParams($product); ?>
+                                    <form data-role="tocart-form" class="aipr-tocart"
+                                          data-product-sku="<?= $escaper->escapeHtmlAttr($product->getSku()) ?>"
+                                          action="<?= $escaper->escapeUrl($postParams['action']) ?>"
+                                          method="post"
+                                          data-mage-init='{"catalogAddToCart": {}}'>
+                                        <input type="hidden" name="product" value="<?= (int)$postParams['data']['product'] ?>">
+                                        <input type="hidden" name="<?= /* @noEscape */ \Magento\Framework\App\ActionInterface::PARAM_NAME_URL_ENCODED ?>"
+                                               value="<?= $escaper->escapeHtmlAttr($postParams['data'][\Magento\Framework\App\ActionInterface::PARAM_NAME_URL_ENCODED]) ?>">
+                                        <?= $block->getBlockHtml('formkey') ?>
+                                        <button type="submit" class="action tocart primary"
+                                                title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>">
+                                            <span><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
+                                        </button>
+                                    </form>
+                                <?php elseif ($product->isSaleable()): ?>
+                                    <a class="action primary" href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>">
+                                        <span><?= $escaper->escapeHtml(__('View Options')) ?></span>
+                                    </a>
+                                <?php else: ?>
+                                    <div class="stock unavailable"><span><?= $escaper->escapeHtml(__('Out of stock')) ?></span></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            <?php endforeach; ?>
+        </ol>
+    </div>
+</section>

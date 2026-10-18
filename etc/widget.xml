@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="saurabhg_airecommend_unit" class="Saurabhg\AIproductRecommend\Block\Widget\Recommendation">
+        <label translate="true">AI Product Recommendations</label>
+        <description translate="true">Lazy-loaded, personalized recommendation unit</description>
+        <parameters>
+            <parameter name="unit_code" xsi:type="select" required="true" visible="true"
+                       source_model="Saurabhg\AIproductRecommend\Model\Source\UnitCode">
+                <label translate="true">Recommendation Unit</label>
+                <description translate="true">Units are managed in Marketing > AI Recommendations > Recommendation Units.</description>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

@@ -1,0 +1,304 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Magento\Backend\Block\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Saurabhg\AIproductRecommend\ViewModel\Adminhtml\Simulator $vm */
+$vm = $block->getData('view_model');
+$in = $vm->getInput();
+$features = $vm->getFeatures();
+$sourceLabels = [
+    'local' => __('Local engine'), 'remote' => __('Remote AI'), 'fallback' => __('Fallback strategy'),
+    'last_good' => __('Last good result'), 'holdout' => __('A/B holdout'), 'disabled' => __('Module disabled'),
+    'not_applicable' => __('Unit not shown to this shopper'), 'not_found' => __('Unit not found'),
+];
+?>
+<div class="aipr-page">
+
+    <header class="aipr-dash__head">
+        <div>
+            <h2 class="aipr-dash__title"><?= $escaper->escapeHtml(__('Recommendation Simulator')) ?></h2>
+            <p class="aipr-dash__subtitle"><?= $escaper->escapeHtml(__('Preview what a shopper would see and why. Nothing is cached, tracked or assigned to an experiment.')) ?></p>
+        </div>
+    </header>
+
+    <form class="aipr-card aipr-sim" method="get" action="<?= $escaper->escapeUrl($vm->getFormUrl()) ?>">
+        <input type="hidden" name="simulate" value="1">
+        <div class="aipr-sim__groups">
+            <fieldset class="aipr-sim__group">
+                <legend><span class="aipr-sim__step">1</span><?= $escaper->escapeHtml(__('Where is the shopper?')) ?></legend>
+                <label class="aipr-field aipr-field--wide"><span><?= $escaper->escapeHtml(__('Store View')) ?></span>
+                    <select name="store_id" class="admin__control-select">
+                        <?php foreach ($vm->getStores() as $id => $name): ?>
+                            <option value="<?= (int)$id ?>" <?= (string)$id === $in['store_id'] ? 'selected' : '' ?>><?= $escaper->escapeHtml($name) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <label class="aipr-field"><span><?= $escaper->escapeHtml(__('Page')) ?></span>
+                    <select name="page_type" class="admin__control-select">
+                        <?php foreach ($vm->getPageTypes() as $type => $label): ?>
+                            <option value="<?= $escaper->escapeHtmlAttr($type) ?>" <?= $type === ($in['page_type'] ?: 'product') ? 'selected' : '' ?>><?= $escaper->escapeHtml($label) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <label class="aipr-field"><span><?= $escaper->escapeHtml(__('Product SKU being viewed')) ?></span>
+                    <input type="text" name="product_sku" class="admin__control-text" placeholder="24-MB01" value="<?= $escaper->escapeHtmlAttr($in['product_sku']) ?>">
+                </label>
+                <label class="aipr-field"><span><?= $escaper->escapeHtml(__('Category ID')) ?></span>
+                    <input type="number" min="1" name="category_id" class="admin__control-text" value="<?= $escaper->escapeHtmlAttr($in['category_id']) ?>">
+                </label>
+                <label class="aipr-field aipr-field--wide"><span><?= $escaper->escapeHtml(__('SKUs in cart')) ?></span>
+                    <input type="text" name="cart_skus" class="admin__control-text" placeholder="SKU1, SKU2" value="<?= $escaper->escapeHtmlAttr($in['cart_skus']) ?>">
+                </label>
+            </fieldset>
+
+            <fieldset class="aipr-sim__group">
+                <legend><span class="aipr-sim__step">2</span><?= $escaper->escapeHtml(__('What should be recommended?')) ?></legend>
+                <label class="aipr-field aipr-field--wide"><span><?= $escaper->escapeHtml(__('Recommendation Unit')) ?></span>
+                    <select name="unit_code" class="admin__control-select">
+                        <option value=""><?= $escaper->escapeHtml(__('No unit – use the type below')) ?></option>
+                        <?php foreach ($vm->getUnitOptions() as $option): ?>
+                            <option value="<?= $escaper->escapeHtmlAttr($option['value']) ?>" <?= $option['value'] === $in['unit_code'] ? 'selected' : '' ?>><?= $escaper->escapeHtml($option['label']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <small class="aipr-muted"><?= $escaper->escapeHtml(__('A unit applies its own rules, pins, exclusions, targeting and A/B test.')) ?></small>
+                </label>
+                <label class="aipr-field aipr-field--wide"><span><?= $escaper->escapeHtml(__('Type (only without unit)')) ?></span>
+                    <select name="type" class="admin__control-select">
+                        <?php foreach ($vm->getTypeOptions() as $option): ?>
+                            <option value="<?= $escaper->escapeHtmlAttr($option['value']) ?>" <?= $option['value'] === ($in['type'] ?: 'hybrid') ? 'selected' : '' ?>><?= $escaper->escapeHtml($option['label']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <label class="aipr-field"><span><?= $escaper->escapeHtml(__('Number of products')) ?></span>
+                    <input type="number" min="1" max="50" name="limit" class="admin__control-text" placeholder="<?= $escaper->escapeHtmlAttr(__('unit default')) ?>" value="<?= $escaper->escapeHtmlAttr($in['limit']) ?>">
+                </label>
+            </fieldset>
+
+            <fieldset class="aipr-sim__group">
+                <legend><span class="aipr-sim__step">3</span><?= $escaper->escapeHtml(__('Who is the shopper?')) ?> <span class="aipr-muted aipr-optional"><?= $escaper->escapeHtml(__('optional')) ?></span></legend>
+                <label class="aipr-field"><span><?= $escaper->escapeHtml(__('Customer ID')) ?></span>
+                    <input type="number" min="1" name="customer_id" class="admin__control-text" value="<?= $escaper->escapeHtmlAttr($in['customer_id']) ?>">
+                </label>
+                <label class="aipr-field"><span><?= $escaper->escapeHtml(__('Visitor ID')) ?></span>
+                    <input type="text" name="visitor_id" class="admin__control-text" placeholder="v…" value="<?= $escaper->escapeHtmlAttr($in['visitor_id']) ?>">
+                </label>
+                <label class="aipr-field aipr-field--wide"><span><?= $escaper->escapeHtml(__('Customer Group')) ?></span>
+                    <select name="customer_group_id" class="admin__control-select">
+                        <option value=""><?= $escaper->escapeHtml(__('From the customer (or NOT LOGGED IN)')) ?></option>
+                        <?php foreach ($vm->getGroupOptions() as $option): ?>
+                            <option value="<?= $escaper->escapeHtmlAttr($option['value']) ?>" <?= (string)$option['value'] === $in['customer_group_id'] ? 'selected' : '' ?>><?= $escaper->escapeHtml($option['label']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <small class="aipr-muted aipr-field--wide"><?= $escaper->escapeHtml(__('Leave empty to simulate a new, anonymous visitor (cold start).')) ?></small>
+            </fieldset>
+        </div>
+        <div class="aipr-sim__actions">
+            <button type="submit" class="action-primary"><span><?= $escaper->escapeHtml(__('Run Simulation')) ?></span></button>
+            <?php if ($vm->isSubmitted()): ?>
+                <a class="aipr-link" href="<?= $escaper->escapeUrl($vm->getFormUrl()) ?>"><?= $escaper->escapeHtml(__('Clear')) ?></a>
+            <?php endif; ?>
+        </div>
+    </form>
+
+    <?php if (!$vm->isSubmitted()): ?>
+        <section class="aipr-card">
+            <div class="aipr-empty">
+                <strong><?= $escaper->escapeHtml(__('Fill in a scenario and run the simulation')) ?></strong>
+                <span><?= $escaper->escapeHtml(__('For example: Product page + a product SKU + unit "pdp_similar" shows the similar products for that product, with the score of every signal.')) ?></span>
+                <span><?= $escaper->escapeHtml(__('Tip: run it again after saving a business rule to preview its effect before shoppers see it.')) ?></span>
+            </div>
+        </section>
+    <?php else: ?>
+        <?php $sim = $vm->simulate(); ?>
+        <?php if ($sim['error']): ?>
+            <div class="message message-error error"><div><?= $escaper->escapeHtml($sim['error']) ?></div></div>
+        <?php else: ?>
+            <?php $result = $sim['result'];
+            $debug = $sim['debug'];
+            $context = $sim['context'];
+            $source = $result->getSource(); ?>
+
+            <section class="aipr-stats" aria-label="<?= $escaper->escapeHtmlAttr(__('Simulation summary')) ?>">
+                <div class="aipr-stat">
+                    <span class="aipr-stat__label"><?= $escaper->escapeHtml(__('Answered by')) ?></span>
+                    <span class="aipr-stat__value aipr-stat__value--text">
+                        <?= $escaper->escapeHtml($sourceLabels[$source] ?? $source) ?>
+                        <?php if ($result->getIsFallback()): ?><span class="aipr-badge aipr-badge--warning"><?= $escaper->escapeHtml(__('fallback')) ?></span><?php endif; ?>
+                    </span>
+                </div>
+                <div class="aipr-stat">
+                    <span class="aipr-stat__label"><?= $escaper->escapeHtml(__('Products shown')) ?></span>
+                    <span class="aipr-stat__value"><?= count($sim['items']) ?></span>
+                </div>
+                <div class="aipr-stat">
+                    <span class="aipr-stat__label"><?= $escaper->escapeHtml(__('Candidates checked')) ?></span>
+                    <span class="aipr-stat__value"><?= (int)($debug['candidates'] ?? 0) ?></span>
+                </div>
+                <div class="aipr-stat">
+                    <span class="aipr-stat__label"><?= $escaper->escapeHtml(__('Excluded')) ?></span>
+                    <span class="aipr-stat__value"><?= count($sim['excluded']) ?></span>
+                </div>
+                <div class="aipr-stat">
+                    <span class="aipr-stat__label"><?= $escaper->escapeHtml(__('Shopper')) ?></span>
+                    <span class="aipr-stat__value aipr-stat__value--text">
+                        <?= $escaper->escapeHtml($context->customerId ? __('Customer #%1', $context->customerId) : ($context->visitorId ? __('Visitor') : __('Anonymous'))) ?>
+                        <small class="aipr-muted"><?= $escaper->escapeHtml(__('group %1 · %2 segment(s)', $context->customerGroupId, count($context->segmentIds))) ?></small>
+                    </span>
+                </div>
+                <div class="aipr-stat">
+                    <span class="aipr-stat__label"><?= $escaper->escapeHtml(__('A/B variant')) ?></span>
+                    <span class="aipr-stat__value aipr-stat__value--text"><?= $escaper->escapeHtml($context->variantCode ?? __('none')) ?></span>
+                </div>
+            </section>
+
+            <section class="aipr-card" aria-labelledby="aipr-sim-why">
+                <h3 id="aipr-sim-why" class="aipr-card__title"><?= $escaper->escapeHtml(__('How products were ranked')) ?></h3>
+                <div class="aipr-explain">
+                    <div>
+                        <span class="aipr-field-label"><?= $escaper->escapeHtml(__('Signal weights')) ?></span>
+                        <ul class="aipr-chips">
+                            <?php foreach ((array)($debug['weights'] ?? []) as $feature => $weight): ?>
+                                <li class="aipr-chip aipr-chip--static" title="<?= $escaper->escapeHtmlAttr($features[$feature][1] ?? '') ?>">
+                                    <span class="aipr-swatch aipr-seg--<?= $escaper->escapeHtmlAttr($feature) ?>" aria-hidden="true"></span>
+                                    <?= $escaper->escapeHtml($vm->getFeatureLabel($feature)) ?> <strong><?= $escaper->escapeHtml(round($weight * 100) . '%') ?></strong>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <div>
+                        <span class="aipr-field-label"><?= $escaper->escapeHtml(__('Business rules applied')) ?></span>
+                        <p><?= $escaper->escapeHtml(implode(', ', (array)($debug['rules'] ?? [])) ?: __('None')) ?></p>
+                    </div>
+                    <div>
+                        <span class="aipr-field-label"><?= $escaper->escapeHtml(__('Campaigns applied')) ?></span>
+                        <p><?= $escaper->escapeHtml(implode(', ', (array)($debug['campaigns'] ?? [])) ?: __('None')) ?></p>
+                    </div>
+                    <?php if (!empty($debug['fallback']) || !empty($debug['remote'])): ?>
+                        <div>
+                            <span class="aipr-field-label"><?= $escaper->escapeHtml(__('Notes')) ?></span>
+                            <p>
+                                <?php if (!empty($debug['fallback'])): ?>
+                                    <?= $escaper->escapeHtml(__('The primary algorithm returned nothing, so the unit fallback "%1" was used.', $debug['fallback'])) ?>
+                                <?php endif; ?>
+                                <?php if (!empty($debug['remote'])): ?>
+                                    <?= $escaper->escapeHtml(__('Remote AI: %1', $debug['remote'])) ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+            <section class="aipr-card" aria-labelledby="aipr-sim-results">
+                <div class="aipr-card__head">
+                    <h3 id="aipr-sim-results" class="aipr-card__title"><?= $escaper->escapeHtml(__('Recommended Products')) ?></h3>
+                    <span class="aipr-muted"><?= $escaper->escapeHtml(__('Bar = score built from each signal (weight × signal value)')) ?></span>
+                </div>
+                <?php if (!$sim['items']): ?>
+                    <div class="aipr-empty">
+                        <strong><?= $escaper->escapeHtml(__('No product would be shown')) ?></strong>
+                        <span><?= $escaper->escapeHtml($source === 'not_applicable'
+                            ? __('The unit is disabled, not assigned to this store, or targets other customer groups / segments.')
+                            : __('Check the excluded products below, enter a product SKU for product-based types, or run "Recalculate Signals" in the monitor.')) ?></span>
+                    </div>
+                <?php else: ?>
+                    <ol class="aipr-results">
+                        <?php foreach ($sim['items'] as $item): ?>
+                            <li class="aipr-result">
+                                <span class="aipr-result__pos"><?= (int)$item['position'] ?></span>
+                                <span class="aipr-result__img">
+                                    <?php if (!empty($item['product']['image'])): ?>
+                                        <img src="<?= $escaper->escapeUrl($item['product']['image']) ?>" alt="" loading="lazy" width="56" height="56">
+                                    <?php endif; ?>
+                                </span>
+                                <div class="aipr-result__main">
+                                    <div class="aipr-result__title">
+                                        <?php if ($item['product']): ?>
+                                            <a href="<?= $escaper->escapeUrl($item['product']['edit_url']) ?>"><?= $escaper->escapeHtml($item['product']['name']) ?></a>
+                                        <?php else: ?>
+                                            <strong><?= $escaper->escapeHtml($item['sku']) ?></strong>
+                                        <?php endif; ?>
+                                        <code class="aipr-muted"><?= $escaper->escapeHtml($item['sku']) ?></code>
+                                        <span class="aipr-badge aipr-badge--info"><?= $escaper->escapeHtml($item['reason']) ?></span>
+                                        <?php if ($item['pinned']): ?><span class="aipr-badge aipr-badge--warning"><?= $escaper->escapeHtml(__('Pinned')) ?></span><?php endif; ?>
+                                    </div>
+                                    <div class="aipr-scorebar" role="img"
+                                         aria-label="<?= $escaper->escapeHtmlAttr(implode(', ', array_map(static fn($p) => $p['label'] . ' ' . $p['value'], $item['parts']))) ?>">
+                                        <?php foreach ($item['parts'] as $part): ?>
+                                            <span class="aipr-seg aipr-seg--<?= $escaper->escapeHtmlAttr($part['feature']) ?>" style="width: <?= (float)$part['width'] ?>%"
+                                                  title="<?= $escaper->escapeHtmlAttr(sprintf('%s: %s × %s = %s', $part['label'], $part['raw'], $part['weight'], $part['value'])) ?>"></span>
+                                        <?php endforeach; ?>
+                                        <?php if ($item['boost_width']): ?>
+                                            <span class="aipr-seg aipr-seg--boost" style="width: <?= (float)$item['boost_width'] ?>%"
+                                                  title="<?= $escaper->escapeHtmlAttr(__('Rule / campaign boost: +%1', $item['boost'])) ?>"></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <p class="aipr-result__parts aipr-muted">
+                                        <?php foreach (array_slice($item['parts'], 0, 3) as $part): ?>
+                                            <span><?= $escaper->escapeHtml($part['label']) ?> <strong><?= $escaper->escapeHtml($part['value']) ?></strong></span>
+                                        <?php endforeach; ?>
+                                        <?php if ($item['boost'] != 0): ?>
+                                            <span><?= $escaper->escapeHtml(__('Boost')) ?> <strong><?= $escaper->escapeHtml(($item['boost'] > 0 ? '+' : '') . $item['boost']) ?></strong></span>
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                                <span class="aipr-result__score" title="<?= $escaper->escapeHtmlAttr(__('Final score')) ?>"><?= $escaper->escapeHtml(number_format($item['final'], 3)) ?></span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ol>
+                <?php endif; ?>
+            </section>
+
+            <?php if ($sim['excluded']): ?>
+                <section class="aipr-card" aria-labelledby="aipr-sim-excluded">
+                    <div class="aipr-card__head">
+                        <h3 id="aipr-sim-excluded" class="aipr-card__title"><?= $escaper->escapeHtml(__('Excluded Candidates')) ?></h3>
+                        <span class="aipr-muted"><?= $escaper->escapeHtml(__('Found by the algorithm but removed before ranking')) ?></span>
+                    </div>
+                    <div class="aipr-table-wrap">
+                        <table class="aipr-table">
+                            <thead><tr>
+                                <th scope="col"><?= $escaper->escapeHtml(__('Product')) ?></th>
+                                <th scope="col"><?= $escaper->escapeHtml(__('Reason')) ?></th>
+                            </tr></thead>
+                            <tbody>
+                            <?php foreach ($sim['excluded'] as $row): ?>
+                                <tr>
+                                    <th scope="row">
+                                        <?php if ($row['product']): ?>
+                                            <a href="<?= $escaper->escapeUrl($row['product']['edit_url']) ?>"><?= $escaper->escapeHtml($row['product']['name']) ?></a>
+                                            <span class="aipr-muted aipr-unit-meta"><code><?= $escaper->escapeHtml($row['product']['sku']) ?></code></span>
+                                        <?php else: ?>
+                                            <?= $escaper->escapeHtml(__('Product ID %1', $row['id'])) ?>
+                                        <?php endif; ?>
+                                    </th>
+                                    <td><span class="aipr-badge aipr-badge--off"><?= $escaper->escapeHtml($row['reason']) ?></span></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <details class="aipr-card aipr-glossary">
+        <summary><?= $escaper->escapeHtml(__('What do the signals mean?')) ?></summary>
+        <dl>
+            <?php foreach ($features as $feature => [$label, $description]): ?>
+                <dt><span class="aipr-swatch aipr-seg--<?= $escaper->escapeHtmlAttr($feature) ?>" aria-hidden="true"></span><?= $escaper->escapeHtml($label) ?></dt>
+                <dd><?= $escaper->escapeHtml($description) ?></dd>
+            <?php endforeach; ?>
+            <dt><span class="aipr-swatch aipr-seg--boost" aria-hidden="true"></span><?= $escaper->escapeHtml(__('Boost')) ?></dt>
+            <dd><?= $escaper->escapeHtml(__('Added by business rules and campaigns (capped by Maximum Total Boost).')) ?></dd>
+        </dl>
+    </details>
+</div>

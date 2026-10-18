@@ -1,0 +1,211 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Magento\Backend\Block\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Saurabhg\AIproductRecommend\ViewModel\Adminhtml\Dashboard $vm */
+$vm = $block->getData('view_model');
+$range = $vm->getRange();
+$totals = $vm->getTotals();
+$units = $vm->getByUnit();
+$groups = $vm->getDailyGroups();
+$filterParams = array_filter(['from' => $range['from'], 'to' => $range['to'], 'store' => $range['store_id']]);
+$money = static fn($value) => $vm->formatMoney((float)$value);
+?>
+<div class="aipr-page">
+
+    <header class="aipr-dash__head">
+        <div>
+            <h2 class="aipr-dash__title"><?= $escaper->escapeHtml(__('Performance Report')) ?></h2>
+            <p class="aipr-dash__subtitle">
+                <?= $escaper->escapeHtml(__(
+                    '%1 – %2 (%3 days) · %4',
+                    date('M j, Y', strtotime($range['from'])),
+                    date('M j, Y', strtotime($range['to'])),
+                    $range['days'],
+                    $range['store_id'] ? ($vm->getStores()[$range['store_id']] ?? '') : __('All store views')
+                )) ?>
+            </p>
+        </div>
+        <a class="action-primary aipr-button" href="<?= $escaper->escapeUrl($vm->getUrl('*/*/export', $filterParams)) ?>">
+            <span><?= $escaper->escapeHtml(__('Export CSV')) ?></span>
+        </a>
+    </header>
+
+    <form class="aipr-toolbar" method="get" action="<?= $escaper->escapeUrl($vm->getUrl('*/*/index')) ?>">
+        <nav class="aipr-presets" aria-label="<?= $escaper->escapeHtmlAttr(__('Date presets')) ?>">
+            <?php foreach ($vm->getPresets() as $preset): ?>
+                <a class="aipr-chip<?= $preset['active'] ? ' aipr-chip--active' : '' ?>"
+                   <?= $preset['active'] ? 'aria-current="true"' : '' ?>
+                   href="<?= $escaper->escapeUrl($preset['url']) ?>"><?= $escaper->escapeHtml($preset['label']) ?></a>
+            <?php endforeach; ?>
+        </nav>
+        <div class="aipr-toolbar__fields">
+            <label class="aipr-field">
+                <span><?= $escaper->escapeHtml(__('From')) ?></span>
+                <input type="date" name="from" class="admin__control-text" value="<?= $escaper->escapeHtmlAttr($range['from']) ?>">
+            </label>
+            <label class="aipr-field">
+                <span><?= $escaper->escapeHtml(__('To')) ?></span>
+                <input type="date" name="to" class="admin__control-text" value="<?= $escaper->escapeHtmlAttr($range['to']) ?>">
+            </label>
+            <label class="aipr-field">
+                <span><?= $escaper->escapeHtml(__('Store View')) ?></span>
+                <select name="store" class="admin__control-select">
+                    <option value=""><?= $escaper->escapeHtml(__('All Store Views')) ?></option>
+                    <?php foreach ($vm->getStores() as $id => $name): ?>
+                        <option value="<?= (int)$id ?>" <?= $range['store_id'] === $id ? 'selected' : '' ?>><?= $escaper->escapeHtml($name) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <button type="submit" class="action-secondary"><span><?= $escaper->escapeHtml(__('Apply')) ?></span></button>
+        </div>
+    </form>
+
+    <section class="aipr-stats aipr-stats--quad" aria-label="<?= $escaper->escapeHtmlAttr(__('Period totals')) ?>">
+        <?php foreach ([
+            [__('Impressions'), $vm->formatNumber($totals['impressions'])],
+            [__('Clicks'), $vm->formatNumber($totals['clicks'])],
+            [__('CTR'), $totals['ctr'] . '%'],
+            [__('Add to Cart'), $vm->formatNumber($totals['add_to_carts'])],
+            [__('Orders'), $vm->formatNumber($totals['orders'])],
+            [__('Conversion'), $totals['conversion_rate'] . '%'],
+            [__('Revenue'), $money($totals['revenue'])],
+            [__('Avg. Order'), $money($totals['aov'])],
+        ] as [$label, $value]): ?>
+            <div class="aipr-stat">
+                <span class="aipr-stat__label"><?= $escaper->escapeHtml($label) ?></span>
+                <span class="aipr-stat__value"><?= $escaper->escapeHtml($value) ?></span>
+            </div>
+        <?php endforeach; ?>
+    </section>
+
+    <?php if (!$groups): ?>
+        <section class="aipr-card">
+            <div class="aipr-empty">
+                <strong><?= $escaper->escapeHtml(__('No recommendation activity in this period')) ?></strong>
+                <span><?= $escaper->escapeHtml(__('Pick a longer range above, or check the dashboard checklist to make sure units are live and tracking is allowed.')) ?></span>
+                <a class="aipr-link" href="<?= $escaper->escapeUrl($vm->getUrl('saurabhg_airecommend/dashboard/index')) ?>"><?= $escaper->escapeHtml(__('Open dashboard')) ?> &rarr;</a>
+            </div>
+        </section>
+    <?php else: ?>
+        <section class="aipr-card" aria-labelledby="aipr-report-units">
+            <h3 id="aipr-report-units" class="aipr-card__title"><?= $escaper->escapeHtml(__('Summary by Unit')) ?></h3>
+            <div class="aipr-table-wrap">
+                <table class="aipr-table">
+                    <thead>
+                    <tr>
+                        <th scope="col"><?= $escaper->escapeHtml(__('Unit')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Impressions')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Clicks')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('CTR')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Add to Cart')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Orders')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Conversion')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Revenue')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Share')) ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($units as $row): ?>
+                        <tr>
+                            <th scope="row">
+                                <?php if ($row['edit_url']): ?>
+                                    <a href="<?= $escaper->escapeUrl($row['edit_url']) ?>"><?= $escaper->escapeHtml($row['title']) ?></a>
+                                <?php else: ?>
+                                    <?= $escaper->escapeHtml($row['title']) ?>
+                                <?php endif; ?>
+                                <span class="aipr-muted aipr-unit-meta"><code><?= $escaper->escapeHtml($row['unit_code']) ?></code> · <?= $escaper->escapeHtml($row['type_label']) ?></span>
+                            </th>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['impressions'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['clicks'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($row['ctr']) ?>%</td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['add_to_carts'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['orders'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($row['conversion_rate']) ?>%</td>
+                            <td class="aipr-num"><strong><?= $escaper->escapeHtml($money($row['revenue'])) ?></strong></td>
+                            <td class="aipr-num">
+                                <span class="aipr-meter aipr-meter--revenue aipr-meter--inline"><span style="width: <?= (float)$row['revenue_share'] ?>%"></span></span>
+                                <?= $escaper->escapeHtml($row['revenue_share']) ?>%
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="aipr-card" aria-labelledby="aipr-report-daily">
+            <div class="aipr-card__head">
+                <h3 id="aipr-report-daily" class="aipr-card__title"><?= $escaper->escapeHtml(__('Daily Detail')) ?></h3>
+                <span class="aipr-muted"><?= $escaper->escapeHtml(__('Newest first · days in UTC')) ?></span>
+            </div>
+            <div class="aipr-table-wrap">
+                <table class="aipr-table aipr-table--grouped">
+                    <thead>
+                    <tr>
+                        <th scope="col"><?= $escaper->escapeHtml(__('Day / Unit')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Impressions')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Clicks')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('CTR')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Add to Cart')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('ATC Rate')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Orders')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Conversion')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Revenue')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('AOV')) ?></th>
+                    </tr>
+                    </thead>
+                    <?php foreach ($groups as $period => $group): ?>
+                        <tbody>
+                        <tr class="aipr-table__group">
+                            <th scope="rowgroup"><?= $escaper->escapeHtml(date('D, M j, Y', strtotime($period))) ?></th>
+                            <?php $t = $group['totals']; ?>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($t['impressions'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($t['clicks'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($t['ctr']) ?>%</td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($t['add_to_carts'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($t['atc_rate']) ?>%</td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($t['orders'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($t['conversion_rate']) ?>%</td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($money($t['revenue'])) ?></td>
+                            <td class="aipr-num"><?= $escaper->escapeHtml($money($t['aov'])) ?></td>
+                        </tr>
+                        <?php foreach ($group['rows'] as $row): ?>
+                            <tr>
+                                <th scope="row" class="aipr-table__indent"><?= $escaper->escapeHtml($row['title']) ?></th>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['impressions'])) ?></td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['clicks'])) ?></td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($row['ctr']) ?>%</td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['add_to_carts'])) ?></td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($row['atc_rate']) ?>%</td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($vm->formatNumber($row['orders'])) ?></td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($row['conversion_rate']) ?>%</td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($money($row['revenue'])) ?></td>
+                                <td class="aipr-num"><?= $escaper->escapeHtml($money($row['aov'])) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    <?php endforeach; ?>
+                </table>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <details class="aipr-card aipr-glossary">
+        <summary><?= $escaper->escapeHtml(__('What do these numbers mean?')) ?></summary>
+        <dl>
+            <dt><?= $escaper->escapeHtml(__('Impressions')) ?></dt><dd><?= $escaper->escapeHtml(__('Recommended products that were at least half visible to a shopper.')) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('CTR')) ?></dt><dd><?= $escaper->escapeHtml(__('Clicks ÷ impressions.')) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('ATC Rate')) ?></dt><dd><?= $escaper->escapeHtml(__('Add-to-carts of clicked products ÷ clicks.')) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('Conversion')) ?></dt><dd><?= $escaper->escapeHtml(__('Orders containing a clicked product ÷ clicks.')) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('Revenue')) ?></dt><dd><?= $escaper->escapeHtml(__('Net row total of products bought within the attribution window after clicking them in a recommendation (last click wins).')) ?></dd>
+            <dt><?= $escaper->escapeHtml(__('AOV')) ?></dt><dd><?= $escaper->escapeHtml(__('Attributed revenue ÷ attributed orders.')) ?></dd>
+        </dl>
+    </details>
+</div>

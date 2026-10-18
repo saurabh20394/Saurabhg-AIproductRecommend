@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">saurabhg_airecommend_experiment_form.saurabhg_airecommend_experiment_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">A/B Experiment</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save_and_continue" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveAndContinueButton"/>
+            <button name="save" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveButton"/>
+            <button name="delete" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\DeleteButton"/>
+            <button name="back" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\BackButton"/>
+        </buttons>
+        <namespace>saurabhg_airecommend_experiment_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>saurabhg_airecommend_experiment_form.saurabhg_airecommend_experiment_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="saurabhg_airecommend_experiment_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="Saurabhg\AIproductRecommend\Ui\DataProvider\ExperimentForm" name="saurabhg_airecommend_experiment_form_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>experiment_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label translate="true">Experiment</label>
+            <collapsible>false</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="experiment_id" formElement="hidden">
+            <settings>
+                <dataType>text</dataType>
+            </settings>
+        </field>
+        <field name="name" formElement="input" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Name</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="status" formElement="select" sortOrder="20">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Status</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Visitors are assigned only while Running and within the dates.</notice>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\ExperimentStatus"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="unit_code" formElement="select" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Recommendation Unit</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\UnitCode"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="store_ids" formElement="multiselect" sortOrder="40">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Store Views</label>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\StoreView"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="start_at" formElement="date" sortOrder="50">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Start Date</label>
+                <validation>
+                    <rule name="validate-date" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="end_at" formElement="date" sortOrder="60">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">End Date</label>
+                <validation>
+                    <rule name="validate-date" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="description" formElement="textarea" sortOrder="70">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Hypothesis</label>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>2</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="variants_set" sortOrder="20">
+        <settings>
+            <label translate="true">Variants</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <dynamicRows name="variants" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="notice" xsi:type="string" translate="true">Allocations must total 100 with exactly one control. Type override: any unit type code, or holdout (no recommendations). Weights JSON example: {"similarity":0.6,"popularity":0.2}.</item>
+                </item>
+            </argument>
+            <settings>
+                <addButtonLabel translate="true">Add Variant</addButtonLabel>
+                <componentType>dynamicRows</componentType>
+                <label translate="true">Variants</label>
+                <dndConfig>
+                    <param name="enabled" xsi:type="boolean">false</param>
+                </dndConfig>
+            </settings>
+            <container name="record" component="Magento_Ui/js/dynamic-rows/record">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="isTemplate" xsi:type="boolean">true</item>
+                        <item name="is_collection" xsi:type="boolean">true</item>
+                        <item name="componentType" xsi:type="string">container</item>
+                    </item>
+                </argument>
+                <field name="variant_id" formElement="hidden" sortOrder="10">
+                    <settings>
+                        <dataType>text</dataType>
+                        <dataScope>variant_id</dataScope>
+                    </settings>
+                </field>
+                <field name="code" formElement="input" sortOrder="20">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Code</label>
+                        <dataScope>code</dataScope>
+                    </settings>
+                </field>
+                <field name="name" formElement="input" sortOrder="30">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Name</label>
+                        <dataScope>name</dataScope>
+                    </settings>
+                </field>
+                <field name="allocation" formElement="input" sortOrder="40">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Traffic %</label>
+                        <dataScope>allocation</dataScope>
+                    </settings>
+                </field>
+                <field name="is_control" formElement="checkbox" sortOrder="50">
+                    <settings>
+                        <dataType>boolean</dataType>
+                        <label translate="true">Control</label>
+                        <dataScope>is_control</dataScope>
+                    </settings>
+                    <formElements>
+                        <checkbox>
+                            <settings>
+                                <valueMap>
+                                    <map name="false" xsi:type="string">0</map>
+                                    <map name="true" xsi:type="string">1</map>
+                                </valueMap>
+                            </settings>
+                        </checkbox>
+                    </formElements>
+                </field>
+                <field name="type" formElement="input" sortOrder="60">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Type Override (or holdout)</label>
+                        <dataScope>type</dataScope>
+                    </settings>
+                </field>
+                <field name="product_count" formElement="input" sortOrder="70">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Product Count</label>
+                        <dataScope>product_count</dataScope>
+                    </settings>
+                </field>
+                <field name="weights" formElement="input" sortOrder="80">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Weights JSON</label>
+                        <dataScope>weights</dataScope>
+                    </settings>
+                </field>
+                <actionDelete name="delete" sortOrder="90">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Remove</label>
+                    </settings>
+                </actionDelete>
+            </container>
+        </dynamicRows>
+    </fieldset>
+</form>

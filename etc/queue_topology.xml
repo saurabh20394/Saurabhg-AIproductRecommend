@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="magento">
+        <binding id="saurabhgAiRecommendEventBinding" topic="saurabhg.airecommend.event" destination="saurabhg.airecommend.event"/>
+        <binding id="saurabhgAiRecommendProductIndexBinding" topic="saurabhg.airecommend.product.index" destination="saurabhg.airecommend.product.index"/>
+    </exchange>
+</config>

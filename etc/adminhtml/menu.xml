@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Saurabhg_AIproductRecommend::root" title="AI Recommendations" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="80" parent="Magento_Backend::marketing"
+             resource="Saurabhg_AIproductRecommend::root"/>
+        <add id="Saurabhg_AIproductRecommend::dashboard" title="Dashboard" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="10" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/dashboard/index" resource="Saurabhg_AIproductRecommend::dashboard"/>
+        <add id="Saurabhg_AIproductRecommend::units" title="Recommendation Units" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="20" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/unit/index" resource="Saurabhg_AIproductRecommend::units"/>
+        <add id="Saurabhg_AIproductRecommend::rules" title="Business Rules" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="30" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/rule/index" resource="Saurabhg_AIproductRecommend::rules"/>
+        <add id="Saurabhg_AIproductRecommend::campaigns" title="Campaigns" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="40" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/campaign/index" resource="Saurabhg_AIproductRecommend::campaigns"/>
+        <add id="Saurabhg_AIproductRecommend::segments" title="Customer Segments" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="50" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/segment/index" resource="Saurabhg_AIproductRecommend::segments"/>
+        <add id="Saurabhg_AIproductRecommend::experiments" title="A/B Experiments" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="60" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/experiment/index" resource="Saurabhg_AIproductRecommend::experiments"/>
+        <add id="Saurabhg_AIproductRecommend::simulator" title="Simulator / Explain" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="70" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/simulator/index" resource="Saurabhg_AIproductRecommend::simulator"/>
+        <add id="Saurabhg_AIproductRecommend::reports" title="Reports" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="80" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/report/index" resource="Saurabhg_AIproductRecommend::reports"/>
+        <add id="Saurabhg_AIproductRecommend::monitor" title="Index &amp; Queue Monitor" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="90" parent="Saurabhg_AIproductRecommend::root"
+             action="saurabhg_airecommend/monitor/index" resource="Saurabhg_AIproductRecommend::monitor"/>
+        <add id="Saurabhg_AIproductRecommend::configuration" title="Configuration" translate="title"
+             module="Saurabhg_AIproductRecommend" sortOrder="100" parent="Saurabhg_AIproductRecommend::root"
+             action="adminhtml/system_config/edit/section/saurabhg_airecommend" resource="Saurabhg_AIproductRecommend::config"/>
+    </menu>
+</config>

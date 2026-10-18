@@ -1,0 +1,38 @@
+{
+    "name": "saurabhg/module-ai-product-recommend",
+    "description": "AI Product Recommendation & Personalization: behavioral + semantic hybrid recommendations, merchant rules, segments, A/B testing, revenue attribution, REST and GraphQL APIs.",
+    "type": "magento2-module",
+    "license": "GPL-3.0-or-later",
+    "version": "1.0.0",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0||~8.4.0||~8.5.0",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "magento/framework": "*",
+        "magento/framework-message-queue": "*",
+        "magento/module-authorization": "*",
+        "magento/module-backend": "*",
+        "magento/module-catalog": "*",
+        "magento/module-catalog-graph-ql": "*",
+        "magento/module-catalog-inventory": "*",
+        "magento/module-checkout": "*",
+        "magento/module-config": "*",
+        "magento/module-customer": "*",
+        "magento/module-graph-ql": "*",
+        "magento/module-quote": "*",
+        "magento/module-sales": "*",
+        "magento/module-store": "*",
+        "magento/module-ui": "*",
+        "magento/module-webapi": "*",
+        "magento/module-widget": "*",
+        "magento/module-wishlist": "*"
+    },
+    "suggest": {
+        "magento/module-mysql-mq": "Default database queue for asynchronous event and embedding jobs",
+        "magento/module-amqp": "RabbitMQ transport for high-volume event ingestion"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {"Saurabhg\\AIproductRecommend\\": ""}
+    }
+}

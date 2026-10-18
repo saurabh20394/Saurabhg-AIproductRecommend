@@ -1,0 +1,55 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Magento\Backend\Block\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Saurabhg\AIproductRecommend\ViewModel\Adminhtml\ExperimentReport $vm */
+$vm = $block->getData('view_model');
+$experiment = $vm->getExperiment();
+$lift = static function ($value) {
+    return $value === null ? '&ndash;' : (($value > 0 ? '+' : '') . $value . '%');
+};
+?>
+<div class="aipr-admin">
+    <?php if (!$experiment): ?>
+        <div class="message message-error error"><div><?= $escaper->escapeHtml(__('This experiment no longer exists.')) ?></div></div>
+    <?php else: ?>
+        <ul class="aipr-meta">
+            <li><?= $escaper->escapeHtml(__('Experiment')) ?>: <strong><?= $escaper->escapeHtml((string)$experiment->getData('name')) ?></strong></li>
+            <li><?= $escaper->escapeHtml(__('Unit')) ?>: <?= $escaper->escapeHtml((string)$experiment->getData('unit_code')) ?></li>
+            <li><?= $escaper->escapeHtml(__('Period (UTC)')) ?>: <?= $escaper->escapeHtml(($experiment->getData('start_at') ?: '-') . ' → ' . ($experiment->getData('end_at') ?: '-')) ?></li>
+        </ul>
+        <table class="data-grid">
+            <thead>
+            <tr>
+                <?php foreach ([__('Variant'), __('Traffic'), __('Assigned'), __('Impressions'), __('Clicks'), __('CTR'), __('Orders'), __('Conversion'), __('AOV'), __('Revenue'), __('Revenue / Visitor')] as $label): ?>
+                    <th class="data-grid-th"><?= $escaper->escapeHtml($label) ?></th>
+                <?php endforeach; ?>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($vm->getRows($experiment) as $row): ?>
+                <tr class="data-row">
+                    <td><strong><?= $escaper->escapeHtml($row['code']) ?></strong> <?= $escaper->escapeHtml($row['name']) ?><?= $row['is_control'] ? ' (' . $escaper->escapeHtml(__('control')) . ')' : '' ?></td>
+                    <td><?= (int)$row['allocation'] ?>%</td>
+                    <td><?= (int)$row['assigned'] ?></td>
+                    <td><?= (int)$row['impressions'] ?></td>
+                    <td><?= (int)$row['clicks'] ?></td>
+                    <td><?= $escaper->escapeHtml($row['ctr']) ?>% <small><?= /* @noEscape */ $lift($row['ctr_lift']) ?></small></td>
+                    <td><?= (int)$row['orders'] ?></td>
+                    <td><?= $escaper->escapeHtml($row['conversion_rate']) ?>% <small><?= /* @noEscape */ $lift($row['conversion_rate_lift']) ?></small></td>
+                    <td><?= $escaper->escapeHtml($row['aov']) ?> <small><?= /* @noEscape */ $lift($row['aov_lift']) ?></small></td>
+                    <td><?= $escaper->escapeHtml($row['revenue']) ?></td>
+                    <td><?= $escaper->escapeHtml($row['revenue_per_visitor']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <p class="aipr-note"><?= $escaper->escapeHtml(__('Lift is relative to the control variant. Check statistical significance before concluding; small samples are noisy.')) ?></p>
+    <?php endif; ?>
+</div>

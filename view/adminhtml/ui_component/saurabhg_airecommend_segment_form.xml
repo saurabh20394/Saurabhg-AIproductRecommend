@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">saurabhg_airecommend_segment_form.saurabhg_airecommend_segment_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Customer Segment</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save_and_continue" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveAndContinueButton"/>
+            <button name="save" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveButton"/>
+            <button name="delete" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\DeleteButton"/>
+            <button name="back" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\BackButton"/>
+        </buttons>
+        <namespace>saurabhg_airecommend_segment_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>saurabhg_airecommend_segment_form.saurabhg_airecommend_segment_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="saurabhg_airecommend_segment_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="Saurabhg\AIproductRecommend\Ui\DataProvider\SegmentForm" name="saurabhg_airecommend_segment_form_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>segment_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label translate="true">Segment</label>
+            <collapsible>false</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="segment_id" formElement="hidden">
+            <settings>
+                <dataType>text</dataType>
+            </settings>
+        </field>
+        <field name="status" formElement="checkbox" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Enabled</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="name" formElement="input" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Name</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="match_type" formElement="select" sortOrder="30">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">all</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Match</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\MatchType"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="description" formElement="textarea" sortOrder="40">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Description</label>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>2</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+    </fieldset>
+    <fieldset name="conditions_set" sortOrder="20">
+        <settings>
+            <label translate="true">Conditions</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <dynamicRows name="conditions" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="notice" xsi:type="string" translate="true">Evaluated in real time from the derived (aggregate) profile; no raw personal data is used.</item>
+                </item>
+            </argument>
+            <settings>
+                <addButtonLabel translate="true">Add Condition</addButtonLabel>
+                <componentType>dynamicRows</componentType>
+                <label translate="true">Conditions</label>
+                <dndConfig>
+                    <param name="enabled" xsi:type="boolean">false</param>
+                </dndConfig>
+            </settings>
+            <container name="record" component="Magento_Ui/js/dynamic-rows/record">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="isTemplate" xsi:type="boolean">true</item>
+                        <item name="is_collection" xsi:type="boolean">true</item>
+                        <item name="componentType" xsi:type="string">container</item>
+                    </item>
+                </argument>
+                <field name="field" formElement="select" sortOrder="10">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Field</label>
+                        <dataScope>field</dataScope>
+                        <validation>
+                            <rule name="required-entry" xsi:type="boolean">true</rule>
+                        </validation>
+                    </settings>
+                    <formElements>
+                        <select>
+                            <settings>
+                                <options class="Saurabhg\AIproductRecommend\Model\Source\SegmentConditionField"/>
+                            </settings>
+                        </select>
+                    </formElements>
+                </field>
+                <field name="operator" formElement="select" sortOrder="20">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Operator</label>
+                        <dataScope>operator</dataScope>
+                        <validation>
+                            <rule name="required-entry" xsi:type="boolean">true</rule>
+                        </validation>
+                    </settings>
+                    <formElements>
+                        <select>
+                            <settings>
+                                <options class="Saurabhg\AIproductRecommend\Model\Source\Operator"/>
+                            </settings>
+                        </select>
+                    </formElements>
+                </field>
+                <field name="value" formElement="input" sortOrder="30">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Value</label>
+                        <dataScope>value</dataScope>
+                    </settings>
+                </field>
+                <actionDelete name="delete" sortOrder="40">
+                    <settings>
+                        <dataType>text</dataType>
+                        <label translate="true">Remove</label>
+                    </settings>
+                </actionDelete>
+            </container>
+        </dynamicRows>
+    </fieldset>
+</form>

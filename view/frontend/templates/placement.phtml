@@ -1,0 +1,18 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * Placeholders only (full page cache safe); units are lazy-loaded by js/recommendations.js.
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Saurabhg\AIproductRecommend\Block\Placement|\Saurabhg\AIproductRecommend\Block\Widget\Recommendation $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<?php foreach ($block->getUnits() as $unit): ?>
+    <div class="aipr-unit aipr-unit--loading"
+         data-aipr-code="<?= $escaper->escapeHtmlAttr($unit->getCode()) ?>"
+         aria-busy="true"></div>
+<?php endforeach; ?>

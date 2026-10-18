@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Saurabhg_AIproductRecommend::css/recommendations.css"/>
+    </head>
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template" name="airecommend.tracker"
+                   template="Saurabhg_AIproductRecommend::tracker.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Saurabhg\AIproductRecommend\ViewModel\Tracker</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

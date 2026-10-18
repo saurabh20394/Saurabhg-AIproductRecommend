@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Cache/etc/cache.xsd">
+    <type name="ai_recommendation" translate="label,description" instance="Saurabhg\AIproductRecommend\Model\Cache\Type">
+        <label>AI Recommendations</label>
+        <description>Generated product recommendation results and unit lists</description>
+    </type>
+</config>

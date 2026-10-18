@@ -1,0 +1,352 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="saurabh" translate="label" sortOrder="300">
+            <label>Saurabh Extensions</label>
+        </tab>
+        <section id="saurabhg_airecommend" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>AI Product Recommendations</label>
+            <tab>saurabh</tab>
+            <resource>Saurabhg_AIproductRecommend::config</resource>
+
+            <group id="general" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <comment><![CDATA[Manage units, rules, segments and experiments in <strong>Marketing &rarr; AI Recommendations</strong>. When disabled for a store view, tracking and recommendation rendering stop without affecting the storefront.]]></comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="debug_log" translate="label comment" type="select" sortOrder="20" showInDefault="1">
+                    <label>Debug Logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Writes verbose, sanitized entries to var/log/ai_recommend.log. Secrets and customer PII are never logged.</comment>
+                </field>
+            </group>
+
+            <group id="tracking" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Behavior Tracking &amp; Consent</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Tracking</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="consent_mode" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Consent Mode</label>
+                    <source_model>Saurabhg\AIproductRecommend\Model\Source\ConsentMode</source_model>
+                    <comment><![CDATA[<strong>Magento Cookie Restriction</strong> follows Stores &gt; Configuration &gt; General &gt; Web &gt; Default Cookie Settings &gt; Cookie Restriction Mode. <strong>Custom Cookie</strong> integrates with a consent management platform (CMP).]]></comment>
+                </field>
+                <field id="consent_cookie" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Consent Cookie Name</label>
+                    <depends><field id="consent_mode">custom_cookie</field></depends>
+                </field>
+                <field id="consent_value" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Consent Cookie Must Contain</label>
+                    <comment>Optional. Leave empty to accept any non-empty cookie value.</comment>
+                    <depends><field id="consent_mode">custom_cookie</field></depends>
+                </field>
+                <field id="anonymous" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Track Anonymous Visitors</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Uses a random pseudonymous first-party visitor ID (cookie aipr_vid), set only after consent.</comment>
+                </field>
+                <field id="personalize_customers" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Personalize for Logged-in Customers</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="track_category" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Track Category Views</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="track_search" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Track Search Queries</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="track_wishlist" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Track Wishlist Actions</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="async" translate="label comment" type="select" sortOrder="100" showInDefault="1">
+                    <label>Process Events Asynchronously</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Recommended. Events are published to the saurabhg.airecommend.event queue (consumer: saurabhgAiRecommendEvent). Set to No only for development.</comment>
+                </field>
+                <field id="rate_limit" translate="label comment" type="text" sortOrder="110" showInDefault="1">
+                    <label>Public Event Rate Limit (per minute)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Maximum events accepted per visitor/IP per minute on public endpoints.</comment>
+                </field>
+                <field id="max_batch" translate="label" type="text" sortOrder="120" showInDefault="1">
+                    <label>Maximum Events per Request</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+            </group>
+
+            <group id="privacy" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Privacy &amp; Data Retention</label>
+                <field id="retention_days" translate="label comment" type="text" sortOrder="10" showInDefault="1">
+                    <label>Behavioral Event Retention (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Raw events, impressions and clicks older than this are purged daily.</comment>
+                </field>
+                <field id="analytics_retention_days" translate="label" type="text" sortOrder="20" showInDefault="1">
+                    <label>Aggregated Analytics Retention (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="anonymous_profile_days" translate="label" type="text" sortOrder="30" showInDefault="1">
+                    <label>Inactive Anonymous Profile Retention (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="attribution_window_days" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Attribution Window (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>A purchased item is attributed to the latest recommendation click on that product within this window.</comment>
+                </field>
+                <field id="data_processing" translate="label" type="note" sortOrder="50" showInDefault="1">
+                    <label>Data Processing Summary</label>
+                    <comment><![CDATA[<strong>Collected:</strong> product/category views, search terms, cart/wishlist actions, orders, recommendation impressions/clicks, linked to a pseudonymous visitor ID or customer ID.<br/><strong>Purpose:</strong> product recommendations and revenue attribution.<br/><strong>Storage:</strong> Magento database tables prefixed ai_.<br/><strong>Retention:</strong> as configured above.<br/><strong>Sent to external AI providers:</strong> product catalog content only, never customer data.<br/><strong>Deletion:</strong> customer deletion removes the profile and anonymizes events.]]></comment>
+                </field>
+            </group>
+
+            <group id="ai" translate="label comment" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>AI Provider</label>
+                <comment><![CDATA[<strong>Local</strong> mode needs no external service: lexical hashing embeddings and the built-in hybrid ranker run inside Magento. <strong>HTTP</strong> mode uses any OpenAI-compatible <code>/v1/embeddings</code> API (OpenAI, an Azure gateway, Ollama, vLLM, LiteLLM or your own FastAPI service). Prefer setting the API key through app/etc/env.php or the environment variable CONFIG__DEFAULT__SAURABHG_AIRECOMMEND__AI__API_KEY.]]></comment>
+                <field id="embedding_provider" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Embedding Provider</label>
+                    <source_model>Saurabhg\AIproductRecommend\Model\Source\Provider</source_model>
+                </field>
+                <field id="endpoint" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>AI Service Base URL</label>
+                    <validate>validate-url</validate>
+                    <comment>e.g. https://api.openai.com or https://ai.example.com (no trailing slash).</comment>
+                </field>
+                <field id="api_key" translate="label" type="obscure" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>API Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="embedding_path" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Embeddings Path</label>
+                </field>
+                <field id="embedding_model" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Embedding Model</label>
+                </field>
+                <field id="ranking_enabled" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Remote Recommendation API</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Calls POST {base}{path} with the contract documented in README. Magento eligibility, rules, pins and exclusions are always applied to the remote result. Falls back to the local engine on timeout or error.</comment>
+                </field>
+                <field id="ranking_path" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recommendation API Path</label>
+                    <depends><field id="ranking_enabled">1</field></depends>
+                </field>
+                <field id="catalog_sync_enabled" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync Catalog to AI Service</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Pushes changed product payloads to POST {base}{catalog path}.</comment>
+                </field>
+                <field id="catalog_sync_path" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Catalog Sync Path</label>
+                    <depends><field id="catalog_sync_enabled">1</field></depends>
+                </field>
+                <field id="timeout_ms" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Storefront Request Timeout (ms)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Remote ranking calls are aborted after this time and the local engine answers instead.</comment>
+                </field>
+                <field id="batch_timeout" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Batch Job Timeout (seconds)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="circuit_threshold" translate="label comment" type="text" sortOrder="120" showInDefault="1">
+                    <label>Circuit Breaker Failure Threshold</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Consecutive failures before the AI service is marked unhealthy and skipped.</comment>
+                </field>
+                <field id="circuit_cooldown" translate="label" type="text" sortOrder="130" showInDefault="1">
+                    <label>Circuit Breaker Cooldown (seconds)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="test_connection" translate="label" type="button" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Validate Connection</label>
+                    <frontend_model>Saurabhg\AIproductRecommend\Block\Adminhtml\System\Config\TestConnection</frontend_model>
+                </field>
+            </group>
+
+            <group id="catalog" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Catalog &amp; Embeddings</label>
+                <field id="embedding_fields" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Embedding Content</label>
+                    <source_model>Saurabhg\AIproductRecommend\Model\Source\EmbeddingField</source_model>
+                    <comment>Only catalog content is embedded. Customer data is excluded by design.</comment>
+                </field>
+                <field id="extra_attributes" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Additional Attributes</label>
+                    <comment>Comma-separated product attribute codes added to the embedding and sync payload, e.g. color,material.</comment>
+                </field>
+                <field id="brand_attribute" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Brand Attribute Code</label>
+                    <comment>Used for brand affinity, boosts and exclusions.</comment>
+                </field>
+                <field id="sync_qty" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Include Stock Quantity in Sync Payload</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="batch_size" translate="label" type="text" sortOrder="50" showInDefault="1">
+                    <label>Embedding Batch Size</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="similar_top_k" translate="label" type="text" sortOrder="60" showInDefault="1">
+                    <label>Similar Products Stored per Product (top-K)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="max_similarity_candidates" translate="label comment" type="text" sortOrder="70" showInDefault="1">
+                    <label>Max Vector Comparisons per Product</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Local vector search compares each product against products sharing its categories, up to this limit. Use an external vector DB through the remote API for very large catalogs.</comment>
+                </field>
+            </group>
+
+            <group id="algorithms" translate="label" sortOrder="60" showInDefault="1">
+                <label>Algorithms</label>
+                <field id="popular_window_days" translate="label" type="text" sortOrder="10" showInDefault="1">
+                    <label>Popularity Window (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="trending_window_days" translate="label" type="text" sortOrder="20" showInDefault="1">
+                    <label>Trending Window (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="trending_half_life_hours" translate="label" type="text" sortOrder="30" showInDefault="1">
+                    <label>Trending Half-life (hours)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="co_purchase_window_days" translate="label" type="text" sortOrder="40" showInDefault="1">
+                    <label>Frequently Bought Together Window (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="co_view_window_days" translate="label" type="text" sortOrder="50" showInDefault="1">
+                    <label>Also Viewed Window (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="relation_top_k" translate="label" type="text" sortOrder="60" showInDefault="1">
+                    <label>Related Products Stored per Product</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+                <field id="profile_half_life_days" translate="label" type="text" sortOrder="70" showInDefault="1">
+                    <label>Profile Affinity Half-life (days)</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                </field>
+            </group>
+
+            <group id="ranking" translate="label comment" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Hybrid Ranking Weights</label>
+                <comment>final_score = Σ weight × feature + merchant boost + campaign boost − penalty. Used by Hybrid and Recommended For You units; other unit types use type-specific weight profiles. A/B variants may override weights.</comment>
+                <field id="w_behavior" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Behavior (co-purchase / co-view / recency)</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="w_similarity" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Semantic Similarity</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="w_affinity" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Customer Affinity</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="w_popularity" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Popularity</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="w_trending" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Trending</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="w_conversion" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Conversion</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="w_inventory" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Inventory</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="max_boost" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Total Boost</label>
+                    <validate>validate-number</validate>
+                    <comment>Absolute cap applied to the sum of rule and campaign boosts per product.</comment>
+                </field>
+                <field id="max_per_category" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Diversity: Max Products per Category</label>
+                    <validate>validate-digits</validate>
+                    <comment>0 disables the diversity cap.</comment>
+                </field>
+            </group>
+
+            <group id="inventory" translate="label" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Inventory &amp; Exclusions</label>
+                <field id="exclude_out_of_stock" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Exclude Out-of-Stock Products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="low_stock_threshold" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Low Stock Threshold (qty)</label>
+                    <validate>validate-number</validate>
+                </field>
+                <field id="excluded_skus" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Globally Excluded SKUs</label>
+                    <comment>One SKU per line or comma-separated. Products can also be excluded with the "Exclude from AI Recommendations" product attribute.</comment>
+                </field>
+                <field id="excluded_categories" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Globally Excluded Category IDs</label>
+                    <comment>Comma-separated category IDs.</comment>
+                </field>
+                <field id="excluded_types" translate="label" type="multiselect" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Excluded Product Types</label>
+                    <source_model>Magento\Catalog\Model\Product\Type</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+            </group>
+
+            <group id="cache" translate="label" sortOrder="90" showInDefault="1">
+                <label>Caching</label>
+                <field id="ttl" translate="label comment" type="text" sortOrder="10" showInDefault="1">
+                    <label>Result Cache TTL (seconds)</label>
+                    <validate>validate-digits</validate>
+                    <comment>Cache type "AI Recommendations" (uses Redis when the Magento default cache is configured for Redis). 0 disables result caching.</comment>
+                </field>
+                <field id="personalized_ttl" translate="label" type="text" sortOrder="20" showInDefault="1">
+                    <label>Personalized Result Cache TTL (seconds)</label>
+                    <validate>validate-digits</validate>
+                </field>
+                <field id="fallback_hours" translate="label comment" type="text" sortOrder="30" showInDefault="1">
+                    <label>Last-good Result Fallback (hours)</label>
+                    <validate>validate-digits</validate>
+                    <comment>Stored results are served when live generation fails.</comment>
+                </field>
+            </group>
+
+            <group id="storefront" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Storefront</label>
+                <field id="show_reason" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Recommendation Reasons</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_add_to_cart" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Add to Cart</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="expose_score" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Expose Scores in REST/GraphQL</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Scores are never rendered in storefront HTML.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

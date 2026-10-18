@@ -1,0 +1,22 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Saurabhg\AIproductRecommend\ViewModel\Tracker $viewModel */
+$viewModel = $block->getData('view_model');
+if (!$viewModel || !$viewModel->isEnabled()) {
+    return;
+}
+?>
+<script type="text/x-magento-init">
+<?= /* @noEscape */ json_encode(
+    ['*' => ['Saurabhg_AIproductRecommend/js/init' => $viewModel->getConfig()]],
+    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES
+) ?>
+</script>

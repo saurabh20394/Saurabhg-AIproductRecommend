@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="admin_system_config_changed_section_saurabhg_airecommend">
+        <observer name="saurabhg_airecommend_config_changed" instance="Saurabhg\AIproductRecommend\Observer\MerchantConfigChangedObserver"/>
+    </event>
+</config>

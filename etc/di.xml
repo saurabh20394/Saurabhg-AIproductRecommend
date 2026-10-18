@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- service contracts -->
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\UnitInterface" type="Saurabhg\AIproductRecommend\Model\Unit"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\UnitRepositoryInterface" type="Saurabhg\AIproductRecommend\Model\UnitRepository"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\RecommendationResultInterface" type="Saurabhg\AIproductRecommend\Model\Data\RecommendationResult"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\RecommendationItemInterface" type="Saurabhg\AIproductRecommend\Model\Data\RecommendationItem"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\EventInterface" type="Saurabhg\AIproductRecommend\Model\Data\Event"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\EventSubmitResultInterface" type="Saurabhg\AIproductRecommend\Model\Data\EventSubmitResult"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\ProfileInterface" type="Saurabhg\AIproductRecommend\Model\Data\ProfileData"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\Data\HealthComponentInterface" type="Saurabhg\AIproductRecommend\Model\Data\HealthComponent"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\RecommendationManagementInterface" type="Saurabhg\AIproductRecommend\Model\Api\RecommendationManagement"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\EventManagementInterface" type="Saurabhg\AIproductRecommend\Model\Api\EventManagement"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\ProfileManagementInterface" type="Saurabhg\AIproductRecommend\Model\Api\ProfileManagement"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\ReindexManagementInterface" type="Saurabhg\AIproductRecommend\Model\Api\ReindexManagement"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\HealthCheckInterface" type="Saurabhg\AIproductRecommend\Model\HealthCheck"/>
+    <preference for="Saurabhg\AIproductRecommend\Api\RankingProviderInterface" type="Saurabhg\AIproductRecommend\Model\Provider\Http\HttpRankingProvider"/>
+
+    <!-- AI provider abstraction: register additional embedding providers here -->
+    <type name="Saurabhg\AIproductRecommend\Model\Provider\ProviderPool">
+        <arguments>
+            <argument name="embeddingProviders" xsi:type="array">
+                <item name="local" xsi:type="object">Saurabhg\AIproductRecommend\Model\Provider\Local\HashingEmbeddingProvider</item>
+                <item name="http" xsi:type="object">Saurabhg\AIproductRecommend\Model\Provider\Http\HttpEmbeddingProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- recommendation algorithms: unit type => strategy -->
+    <type name="Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\StrategyPool">
+        <arguments>
+            <argument name="strategies" xsi:type="array">
+                <item name="popular" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Popular</item>
+                <item name="trending" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Trending</item>
+                <item name="recently_viewed" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\RecentlyViewed</item>
+                <item name="frequently_bought_together" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\FrequentlyBoughtTogether</item>
+                <item name="also_viewed" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\AlsoViewed</item>
+                <item name="similar" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Similar</item>
+                <item name="recommended_for_you" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Personalized</item>
+                <item name="complementary" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Complementary</item>
+                <item name="hybrid" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Hybrid</item>
+                <item name="newest" xsi:type="object">Saurabhg\AIproductRecommend\Model\Recommendation\Strategy\Newest</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- dedicated, sanitized log file -->
+    <virtualType name="Saurabhg\AIproductRecommend\Logger\Monolog" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">aiRecommend</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="file" xsi:type="object">Saurabhg\AIproductRecommend\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Saurabhg\AIproductRecommend\Logger\Logger">
+        <arguments>
+            <argument name="logger" xsi:type="object">Saurabhg\AIproductRecommend\Logger\Monolog</argument>
+        </arguments>
+    </type>
+
+    <!-- sessions are only needed on demand -->
+    <type name="Saurabhg\AIproductRecommend\Model\Personalization\VisitorIdentity">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Saurabhg\AIproductRecommend\Model\Recommendation\ContextBuilder">
+        <arguments>
+            <argument name="checkoutSession" xsi:type="object">Magento\Checkout\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <!-- admin grids -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="saurabhg_airecommend_unit_listing_data_source" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Unit\Grid\Collection</item>
+                <item name="saurabhg_airecommend_rule_listing_data_source" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Rule\Grid\Collection</item>
+                <item name="saurabhg_airecommend_campaign_listing_data_source" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Campaign\Grid\Collection</item>
+                <item name="saurabhg_airecommend_segment_listing_data_source" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Segment\Grid\Collection</item>
+                <item name="saurabhg_airecommend_experiment_listing_data_source" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Experiment\Grid\Collection</item>
+                <item name="saurabhg_airecommend_errorlog_listing_data_source" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\ErrorLog\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Saurabhg\AIproductRecommend\Model\ResourceModel\Unit\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">ai_recommendation_unit</argument>
+            <argument name="resourceModel" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Unit</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Model\ResourceModel\Rule\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">ai_recommendation_rule</argument>
+            <argument name="resourceModel" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Rule</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Model\ResourceModel\Campaign\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">ai_recommendation_campaign</argument>
+            <argument name="resourceModel" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Campaign</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Model\ResourceModel\Segment\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">ai_customer_segment</argument>
+            <argument name="resourceModel" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Segment</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Model\ResourceModel\Experiment\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">ai_ab_experiment</argument>
+            <argument name="resourceModel" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\Experiment</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Model\ResourceModel\ErrorLog\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">ai_recommendation_error_log</argument>
+            <argument name="resourceModel" xsi:type="string">Saurabhg\AIproductRecommend\Model\ResourceModel\ErrorLog</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- admin form data providers (one generic provider, configured per entity) -->
+    <virtualType name="Saurabhg\AIproductRecommend\Ui\DataProvider\UnitForm" type="Saurabhg\AIproductRecommend\Ui\DataProvider\EntityFormDataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Saurabhg\AIproductRecommend\Model\ResourceModel\Unit\Collection</argument>
+            <argument name="persistKey" xsi:type="string">aipr_unit</argument>
+            <argument name="csvFields" xsi:type="array">
+                <item name="store_ids" xsi:type="string">store_ids</item>
+                <item name="customer_group_ids" xsi:type="string">customer_group_ids</item>
+                <item name="segment_ids" xsi:type="string">segment_ids</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Ui\DataProvider\RuleForm" type="Saurabhg\AIproductRecommend\Ui\DataProvider\EntityFormDataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Saurabhg\AIproductRecommend\Model\ResourceModel\Rule\Collection</argument>
+            <argument name="persistKey" xsi:type="string">aipr_rule</argument>
+            <argument name="csvFields" xsi:type="array">
+                <item name="store_ids" xsi:type="string">store_ids</item>
+                <item name="customer_group_ids" xsi:type="string">customer_group_ids</item>
+                <item name="unit_codes" xsi:type="string">unit_codes</item>
+            </argument>
+            <argument name="jsonFields" xsi:type="array">
+                <item name="conditions" xsi:type="string">conditions</item>
+                <item name="actions" xsi:type="string">actions</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Ui\DataProvider\CampaignForm" type="Saurabhg\AIproductRecommend\Ui\DataProvider\EntityFormDataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Saurabhg\AIproductRecommend\Model\ResourceModel\Campaign\Collection</argument>
+            <argument name="persistKey" xsi:type="string">aipr_campaign</argument>
+            <argument name="csvFields" xsi:type="array">
+                <item name="store_ids" xsi:type="string">store_ids</item>
+                <item name="unit_codes" xsi:type="string">unit_codes</item>
+                <item name="segment_ids" xsi:type="string">segment_ids</item>
+            </argument>
+            <argument name="dateTimeFields" xsi:type="array">
+                <item name="start_at" xsi:type="string">start_at</item>
+                <item name="end_at" xsi:type="string">end_at</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Ui\DataProvider\SegmentForm" type="Saurabhg\AIproductRecommend\Ui\DataProvider\EntityFormDataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Saurabhg\AIproductRecommend\Model\ResourceModel\Segment\Collection</argument>
+            <argument name="persistKey" xsi:type="string">aipr_segment</argument>
+            <argument name="jsonFields" xsi:type="array">
+                <item name="conditions" xsi:type="string">conditions</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Saurabhg\AIproductRecommend\Ui\DataProvider\ExperimentForm" type="Saurabhg\AIproductRecommend\Ui\DataProvider\EntityFormDataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Saurabhg\AIproductRecommend\Model\ResourceModel\Experiment\Collection</argument>
+            <argument name="persistKey" xsi:type="string">aipr_experiment</argument>
+            <argument name="csvFields" xsi:type="array">
+                <item name="store_ids" xsi:type="string">store_ids</item>
+            </argument>
+            <argument name="dateTimeFields" xsi:type="array">
+                <item name="start_at" xsi:type="string">start_at</item>
+                <item name="end_at" xsi:type="string">end_at</item>
+            </argument>
+            <argument name="modifier" xsi:type="object">Saurabhg\AIproductRecommend\Ui\DataProvider\ExperimentVariantsModifier</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- CLI -->
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="saurabhg_airecommend_reindex" xsi:type="object">Saurabhg\AIproductRecommend\Console\Command\ReindexCommand</item>
+                <item name="saurabhg_airecommend_calculate" xsi:type="object">Saurabhg\AIproductRecommend\Console\Command\CalculateCommand</item>
+                <item name="saurabhg_airecommend_forget" xsi:type="object">Saurabhg\AIproductRecommend\Console\Command\ForgetCommand</item>
+                <item name="saurabhg_airecommend_health" xsi:type="object">Saurabhg\AIproductRecommend\Console\Command\HealthCommand</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Saurabhg\AIproductRecommend\Console\Command\ReindexCommand">
+        <arguments>
+            <argument name="indexer" xsi:type="object">Saurabhg\AIproductRecommend\Model\Catalog\ProductIndexer\Proxy</argument>
+            <argument name="indexQueue" xsi:type="object">Saurabhg\AIproductRecommend\Model\Catalog\IndexQueue\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Saurabhg\AIproductRecommend\Console\Command\CalculateCommand">
+        <arguments>
+            <argument name="jobs" xsi:type="object">Saurabhg\AIproductRecommend\Cron\Jobs\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Saurabhg\AIproductRecommend\Console\Command\ForgetCommand">
+        <arguments>
+            <argument name="dataEraser" xsi:type="object">Saurabhg\AIproductRecommend\Model\Privacy\DataEraser\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Saurabhg\AIproductRecommend\Console\Command\HealthCommand">
+        <arguments>
+            <argument name="healthCheck" xsi:type="object">Saurabhg\AIproductRecommend\Model\HealthCheck\Proxy</argument>
+        </arguments>
+    </type>
+</config>

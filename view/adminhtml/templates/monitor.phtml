@@ -1,0 +1,182 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Magento\Backend\Block\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Saurabhg\AIproductRecommend\ViewModel\Adminhtml\Monitor $vm */
+$vm = $block->getData('view_model');
+$overall = $vm->getOverallHealth();
+$stores = $vm->getStoreStatus();
+$failures = $vm->getFailures();
+$healthLabels = ['ok' => __('All systems healthy'), 'warning' => __('Needs attention'), 'down' => __('Service problem')];
+$statusLabels = ['ok' => __('OK'), 'warning' => __('Warning'), 'down' => __('Down'), 'disabled' => __('Off')];
+$jobLabels = ['success' => __('Succeeded'), 'error' => __('Failed'), 'missed' => __('Missed'), 'running' => __('Running'), 'never' => __('Not run yet')];
+$jobClasses = ['success' => 'ok', 'error' => 'down', 'missed' => 'warning', 'running' => 'ok', 'never' => 'disabled'];
+$when = static fn(?string $date) => $date ? date('M j, H:i', strtotime($date)) . ' UTC' : '–';
+?>
+<div class="aipr-page">
+
+    <header class="aipr-dash__head">
+        <div>
+            <h2 class="aipr-dash__title"><?= $escaper->escapeHtml(__('Index & Queue Monitor')) ?></h2>
+            <p class="aipr-dash__subtitle"><?= $escaper->escapeHtml(__('Background work that keeps recommendations fresh: embeddings, signals, queues and scheduled jobs.')) ?></p>
+        </div>
+        <span class="aipr-pill aipr-pill--<?= $escaper->escapeHtmlAttr($overall) ?>">
+            <span class="aipr-dot" aria-hidden="true"></span><?= $escaper->escapeHtml($healthLabels[$overall] ?? $overall) ?>
+        </span>
+    </header>
+
+    <section class="aipr-tiles" aria-label="<?= $escaper->escapeHtmlAttr(__('Dependencies')) ?>">
+        <?php foreach ($vm->getHealth() as $component): ?>
+            <div class="aipr-tile aipr-tile--<?= $escaper->escapeHtmlAttr($component->getStatus()) ?>">
+                <div class="aipr-tile__head">
+                    <span class="aipr-tile__name"><?= $escaper->escapeHtml($component->getName()) ?></span>
+                    <span class="aipr-badge aipr-badge--<?= $escaper->escapeHtmlAttr($component->getStatus()) ?>">
+                        <?= $escaper->escapeHtml($statusLabels[$component->getStatus()] ?? $component->getStatus()) ?>
+                    </span>
+                </div>
+                <span class="aipr-muted"><?= $escaper->escapeHtml($component->getMessage()) ?></span>
+            </div>
+        <?php endforeach; ?>
+    </section>
+
+    <?php if ($vm->canRunActions()): ?>
+        <section class="aipr-card" aria-labelledby="aipr-actions-title">
+            <h3 id="aipr-actions-title" class="aipr-card__title"><?= $escaper->escapeHtml(__('Actions')) ?></h3>
+            <div class="aipr-action-grid">
+                <?php foreach ($vm->getActions() as $action): ?>
+                    <form method="post" class="aipr-action" action="<?= $escaper->escapeUrl($vm->getUrl('saurabhg_airecommend/monitor/action')) ?>">
+                        <?= $block->getBlockHtml('formkey') ?>
+                        <input type="hidden" name="do" value="<?= $escaper->escapeHtmlAttr($action['code']) ?>">
+                        <div>
+                            <strong><?= $escaper->escapeHtml($action['label']) ?></strong>
+                            <span class="aipr-muted"><?= $escaper->escapeHtml($action['description']) ?></span>
+                        </div>
+                        <button type="submit" class="<?= $action['primary'] ? 'action-primary' : 'action-secondary' ?>">
+                            <span><?= $escaper->escapeHtml(__('Run')) ?></span>
+                        </button>
+                    </form>
+                <?php endforeach; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <section class="aipr-card" aria-labelledby="aipr-index-title">
+        <div class="aipr-card__head">
+            <h3 id="aipr-index-title" class="aipr-card__title"><?= $escaper->escapeHtml(__('Catalog Index by Store View')) ?></h3>
+            <span class="aipr-muted"><?= $escaper->escapeHtml(__('"Skipped" products are disabled or not visible individually, so they are never recommended.')) ?></span>
+        </div>
+        <div class="aipr-store-grid">
+            <?php foreach ($stores as $row): ?>
+                <article class="aipr-store">
+                    <div class="aipr-store__head">
+                        <strong><?= $escaper->escapeHtml($row['store']) ?></strong>
+                        <span class="aipr-badge aipr-badge--<?= $row['enabled'] ? 'ok' : 'disabled' ?>">
+                            <?= $escaper->escapeHtml($row['enabled'] ? __('Module enabled') : __('Module disabled')) ?>
+                        </span>
+                    </div>
+                    <div class="aipr-store__progress">
+                        <div class="aipr-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?= (float)$row['percent'] ?>"
+                             aria-label="<?= $escaper->escapeHtmlAttr(__('Index progress')) ?>">
+                            <span style="width: <?= (float)$row['percent'] ?>%"></span>
+                        </div>
+                        <span class="aipr-store__percent"><?= $escaper->escapeHtml($row['percent']) ?>%</span>
+                    </div>
+                    <dl class="aipr-counts">
+                        <div><dt><?= $escaper->escapeHtml(__('Products')) ?></dt><dd><?= (int)$row['total'] ?></dd></div>
+                        <div><dt><?= $escaper->escapeHtml(__('Embedded')) ?></dt><dd><?= (int)$row['indexed'] ?></dd></div>
+                        <div><dt><?= $escaper->escapeHtml(__('Skipped')) ?></dt><dd><?= (int)$row['skipped'] ?></dd></div>
+                        <div class="<?= $row['pending'] ? 'aipr-counts--warn' : '' ?>"><dt><?= $escaper->escapeHtml(__('Pending')) ?></dt><dd><?= (int)$row['pending'] ?></dd></div>
+                        <div class="<?= $row['failed'] ? 'aipr-counts--bad' : '' ?>"><dt><?= $escaper->escapeHtml(__('Failed')) ?></dt><dd><?= (int)$row['failed'] ?></dd></div>
+                    </dl>
+                    <p class="aipr-store__relations aipr-muted">
+                        <?= $escaper->escapeHtml(__(
+                            'Products with relations: %1 similar · %2 bought together · %3 also viewed',
+                            $row['similar'],
+                            $row['co_purchase'],
+                            $row['co_view']
+                        )) ?>
+                    </p>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </section>
+
+    <?php if ($failures): ?>
+        <section class="aipr-card" aria-labelledby="aipr-failures-title">
+            <h3 id="aipr-failures-title" class="aipr-card__title"><?= $escaper->escapeHtml(__('Products That Failed to Index')) ?></h3>
+            <div class="aipr-table-wrap">
+                <table class="aipr-table">
+                    <thead><tr>
+                        <th scope="col"><?= $escaper->escapeHtml(__('SKU')) ?></th>
+                        <th scope="col"><?= $escaper->escapeHtml(__('Store')) ?></th>
+                        <th scope="col" class="aipr-num"><?= $escaper->escapeHtml(__('Attempts')) ?></th>
+                        <th scope="col"><?= $escaper->escapeHtml(__('Error')) ?></th>
+                        <th scope="col"><?= $escaper->escapeHtml(__('Last Try')) ?></th>
+                    </tr></thead>
+                    <tbody>
+                    <?php foreach ($failures as $row): ?>
+                        <tr>
+                            <th scope="row"><?= $escaper->escapeHtml((string)$row['sku']) ?></th>
+                            <td><?= (int)$row['store_id'] ?></td>
+                            <td class="aipr-num"><?= (int)$row['attempts'] ?></td>
+                            <td class="aipr-wrap"><?= $escaper->escapeHtml((string)$row['last_error']) ?></td>
+                            <td><?= $escaper->escapeHtml($when((string)$row['updated_at'])) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    <?php endif; ?>
+
+    <section class="aipr-card" aria-labelledby="aipr-jobs-title">
+        <div class="aipr-card__head">
+            <h3 id="aipr-jobs-title" class="aipr-card__title"><?= $escaper->escapeHtml(__('Scheduled Jobs')) ?></h3>
+            <span class="aipr-muted"><?= $escaper->escapeHtml(__('Cron group "saurabhg_airecommend" · run bin/magento cron:run')) ?></span>
+        </div>
+        <div class="aipr-table-wrap">
+            <table class="aipr-table">
+                <thead><tr>
+                    <th scope="col"><?= $escaper->escapeHtml(__('Job')) ?></th>
+                    <th scope="col"><?= $escaper->escapeHtml(__('Last Result')) ?></th>
+                    <th scope="col"><?= $escaper->escapeHtml(__('Finished')) ?></th>
+                    <th scope="col"><?= $escaper->escapeHtml(__('Next Run')) ?></th>
+                </tr></thead>
+                <tbody>
+                <?php foreach ($vm->getJobs() as $job): ?>
+                    <tr>
+                        <th scope="row">
+                            <?= $escaper->escapeHtml($job['label']) ?>
+                            <span class="aipr-muted aipr-unit-meta"><code><?= $escaper->escapeHtml($job['code']) ?></code></span>
+                        </th>
+                        <td>
+                            <span class="aipr-badge aipr-badge--<?= $escaper->escapeHtmlAttr($jobClasses[$job['status']] ?? 'disabled') ?>">
+                                <?= $escaper->escapeHtml($jobLabels[$job['status']] ?? $job['status']) ?>
+                            </span>
+                            <?php if ($job['message']): ?>
+                                <span class="aipr-muted aipr-unit-meta"><?= $escaper->escapeHtml($job['message']) ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= $escaper->escapeHtml($when($job['finished_at'])) ?></td>
+                        <td><?= $escaper->escapeHtml($when($job['next'])) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <p class="aipr-muted aipr-help">
+            <?= $escaper->escapeHtml(__('Queue consumers saurabhgAiRecommendEvent and saurabhgAiRecommendProductIndex are started by cron. Pending products are also embedded every 10 minutes, so the module keeps working even when consumers are not running.')) ?>
+        </p>
+    </section>
+
+    <section class="aipr-card aipr-card--joined" aria-labelledby="aipr-errors-title">
+        <h3 id="aipr-errors-title" class="aipr-card__title"><?= $escaper->escapeHtml(__('Failed Background Jobs')) ?></h3>
+        <p class="aipr-muted aipr-help"><?= $escaper->escapeHtml(__('Event batches or index jobs that failed are kept here instead of being lost. Select rows and choose Retry (run again) or Mark Resolved in the Actions menu.')) ?></p>
+    </section>
+</div>

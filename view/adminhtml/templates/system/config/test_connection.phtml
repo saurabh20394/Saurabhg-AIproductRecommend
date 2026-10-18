@@ -1,0 +1,20 @@
+<?php
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+
+/** @var \Saurabhg\AIproductRecommend\Block\Adminhtml\System\Config\TestConnection $block */
+/** @var \Magento\Framework\Escaper $escaper */
+?>
+<button type="button" class="action-default scalable" id="aipr-test-connection"
+        data-url="<?= $escaper->escapeUrl($block->getAjaxUrl()) ?>">
+    <span><?= $escaper->escapeHtml(__('Validate Connection')) ?></span>
+</button>
+<div id="aipr-test-connection-result" class="note" role="status" aria-live="polite"></div>
+<p class="note"><span><?= $escaper->escapeHtml(__('Save the configuration first; the saved values of this scope are tested.')) ?></span></p>
+<script type="text/x-magento-init">
+{"#aipr-test-connection": {"Saurabhg_AIproductRecommend/js/test-connection": {}}}
+</script>

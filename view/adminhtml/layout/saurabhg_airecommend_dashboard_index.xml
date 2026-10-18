@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Saurabhg_AIproductRecommend::css/admin.css"/>
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Backend\Block\Template" name="airecommend.dashboard" template="Saurabhg_AIproductRecommend::dashboard.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Saurabhg\AIproductRecommend\ViewModel\Adminhtml\Dashboard</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

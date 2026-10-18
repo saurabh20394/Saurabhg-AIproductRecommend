@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">saurabhg_airecommend_rule_listing.saurabhg_airecommend_rule_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="*/*/new"/>
+                <class>primary</class>
+                <label translate="true">Add Business Rule</label>
+            </button>
+        </buttons>
+        <spinner>saurabhg_airecommend_rule_listing_columns</spinner>
+        <deps>
+            <dep>saurabhg_airecommend_rule_listing.saurabhg_airecommend_rule_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="saurabhg_airecommend_rule_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">rule_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Saurabhg_AIproductRecommend::rules</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="saurabhg_airecommend_rule_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>rule_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <massaction name="listing_massaction">
+            <action name="enable">
+                <settings>
+                    <url path="*/*/massStatus">
+                        <param name="status">1</param>
+                    </url>
+                    <type>enable</type>
+                    <label translate="true">Enable</label>
+                </settings>
+            </action>
+            <action name="disable">
+                <settings>
+                    <url path="*/*/massStatus">
+                        <param name="status">0</param>
+                    </url>
+                    <type>disable</type>
+                    <label translate="true">Disable</label>
+                </settings>
+            </action>
+            <action name="delete">
+                <settings>
+                    <confirm>
+                        <message translate="true">Delete the selected records?</message>
+                        <title translate="true">Delete</title>
+                    </confirm>
+                    <url path="*/*/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="saurabhg_airecommend_rule_listing_columns">
+        <settings>
+            <childDefaults>
+                <param name="fieldAction" xsi:type="array">
+                    <item name="provider" xsi:type="string">saurabhg_airecommend_rule_listing.saurabhg_airecommend_rule_listing.saurabhg_airecommend_rule_listing_columns.actions</item>
+                    <item name="target" xsi:type="string">applyAction</item>
+                    <item name="params" xsi:type="array">
+                        <item name="0" xsi:type="string">edit</item>
+                        <item name="1" xsi:type="string">${ $.$data.rowIndex }</item>
+                    </item>
+                </param>
+            </childDefaults>
+        </settings>
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>rule_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="rule_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+        <column name="name" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Name</label>
+            </settings>
+        </column>
+        <column name="priority" sortOrder="30">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Priority</label>
+            </settings>
+        </column>
+        <column name="unit_codes" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Units</label>
+            </settings>
+        </column>
+        <column name="from_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="50">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">From</label>
+            </settings>
+        </column>
+        <column name="to_date" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="60">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">To</label>
+            </settings>
+        </column>
+        <column name="status" component="Magento_Ui/js/grid/columns/select" sortOrder="70">
+            <settings>
+                <options class="Saurabhg\AIproductRecommend\Model\Source\Status"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <column name="updated_at" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="80">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Updated</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Saurabhg\AIproductRecommend\Ui\Component\Listing\Column\Actions" sortOrder="200">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="idField" xsi:type="string">rule_id</item>
+                    <item name="editUrlPath" xsi:type="string">saurabhg_airecommend/rule/edit</item>
+                    <item name="deleteUrlPath" xsi:type="string">saurabhg_airecommend/rule/delete</item>
+                </item>
+            </argument>
+            <settings>
+                <indexField>rule_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

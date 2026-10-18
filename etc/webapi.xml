@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * Store scope: /rest/{store_code}/V1/... ; customer personalization requires a customer bearer token.
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/ai-recommendations" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\RecommendationManagementInterface" method="getRecommendations"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/units/:code" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\RecommendationManagementInterface" method="getUnit"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/similar/:sku" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\RecommendationManagementInterface" method="getSimilar"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/trending" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\RecommendationManagementInterface" method="getTrending"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/events" method="POST">
+        <service class="Saurabhg\AIproductRecommend\Api\EventManagementInterface" method="submit"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/profile/mine" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\ProfileManagementInterface" method="getProfile"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="id" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route url="/V1/ai-recommendations/profile/:id" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\ProfileManagementInterface" method="getProfile"/>
+        <resources>
+            <resource ref="Saurabhg_AIproductRecommend::profiles"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/profile/:id" method="DELETE">
+        <service class="Saurabhg\AIproductRecommend\Api\ProfileManagementInterface" method="deleteProfile"/>
+        <resources>
+            <resource ref="Saurabhg_AIproductRecommend::profiles_delete"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/admin/reindex" method="POST">
+        <service class="Saurabhg\AIproductRecommend\Api\ReindexManagementInterface" method="reindex"/>
+        <resources>
+            <resource ref="Saurabhg_AIproductRecommend::reindex"/>
+        </resources>
+    </route>
+    <route url="/V1/ai-recommendations/admin/health" method="GET">
+        <service class="Saurabhg\AIproductRecommend\Api\HealthCheckInterface" method="check"/>
+        <resources>
+            <resource ref="Saurabhg_AIproductRecommend::monitor"/>
+        </resources>
+    </route>
+</routes>

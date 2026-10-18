@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">saurabhg_airecommend_campaign_form.saurabhg_airecommend_campaign_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Campaign</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="save_and_continue" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveAndContinueButton"/>
+            <button name="save" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\SaveButton"/>
+            <button name="delete" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\DeleteButton"/>
+            <button name="back" class="Saurabhg\AIproductRecommend\Block\Adminhtml\Edit\BackButton"/>
+        </buttons>
+        <namespace>saurabhg_airecommend_campaign_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>saurabhg_airecommend_campaign_form.saurabhg_airecommend_campaign_form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="saurabhg_airecommend_campaign_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider class="Saurabhg\AIproductRecommend\Ui\DataProvider\CampaignForm" name="saurabhg_airecommend_campaign_form_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>campaign_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general" sortOrder="10">
+        <settings>
+            <label translate="true">Campaign</label>
+            <collapsible>false</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="campaign_id" formElement="hidden">
+            <settings>
+                <dataType>text</dataType>
+            </settings>
+        </field>
+        <field name="status" formElement="checkbox" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="number">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Enabled</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="name" formElement="input" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Name</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="start_at" formElement="date" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Start Date</label>
+                <validation>
+                    <rule name="validate-date" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Starts at 00:00 store time.</notice>
+            </settings>
+        </field>
+        <field name="end_at" formElement="date" sortOrder="40">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">End Date</label>
+                <validation>
+                    <rule name="validate-date" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Ends at 23:59 store time.</notice>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="boosts" sortOrder="20">
+        <settings>
+            <label translate="true">Boosted Products</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="boost_skus" formElement="textarea" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">SKUs</label>
+                <notice translate="true">One per line or comma-separated.</notice>
+            </settings>
+            <formElements>
+                <textarea>
+                    <settings>
+                        <rows>4</rows>
+                    </settings>
+                </textarea>
+            </formElements>
+        </field>
+        <field name="boost_category_ids" formElement="input" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Category IDs</label>
+                <notice translate="true">Comma-separated.</notice>
+            </settings>
+        </field>
+        <field name="boost_amount" formElement="input" sortOrder="30">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0.2</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Boost Amount</label>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Added to the relevance score of matching products, e.g. 0.2.</notice>
+            </settings>
+        </field>
+    </fieldset>
+    <fieldset name="scope" sortOrder="30">
+        <settings>
+            <label translate="true">Scope</label>
+            <collapsible>true</collapsible>
+            <opened>true</opened>
+        </settings>
+        <field name="store_ids" formElement="multiselect" sortOrder="10">
+        <argument name="data" xsi:type="array">
+            <item name="config" xsi:type="array">
+                <item name="default" xsi:type="string">0</item>
+            </item>
+        </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Store Views</label>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\StoreView"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="unit_codes" formElement="multiselect" sortOrder="20">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Recommendation Units</label>
+                <notice translate="true">Leave empty for all units.</notice>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\UnitCode"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="segment_ids" formElement="multiselect" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Customer Segments</label>
+                <notice translate="true">Leave empty for all shoppers.</notice>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Saurabhg\AIproductRecommend\Model\Source\Segment"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

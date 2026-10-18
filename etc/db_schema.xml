@@ -1,0 +1,484 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <!-- ===================== merchant configuration ===================== -->
+
+    <table name="ai_recommendation_unit" resource="default" engine="innodb" comment="AI Recommendation Unit">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Unit ID"/>
+        <column xsi:type="varchar" name="code" length="64" nullable="false" comment="Unit Code"/>
+        <column xsi:type="varchar" name="title" length="255" nullable="true" comment="Title"/>
+        <column xsi:type="varchar" name="type" length="40" nullable="false" default="popular" comment="Recommendation Type"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" default="1" comment="Status"/>
+        <column xsi:type="varchar" name="store_ids" length="255" nullable="false" default="0" comment="Store View IDs (CSV, 0 = all)"/>
+        <column xsi:type="varchar" name="placement" length="64" nullable="false" default="widget_only" comment="Placement"/>
+        <column xsi:type="int" name="position" nullable="false" default="0" comment="Sort Order in Placement"/>
+        <column xsi:type="smallint" name="product_count" unsigned="true" nullable="false" default="6" comment="Product Count"/>
+        <column xsi:type="decimal" name="min_score" scale="4" precision="8" nullable="false" default="0" comment="Minimum Score"/>
+        <column xsi:type="varchar" name="fallback_type" length="32" nullable="false" default="popular" comment="Fallback Strategy"/>
+        <column xsi:type="varchar" name="customer_group_ids" length="255" nullable="true" comment="Customer Group IDs (CSV, empty = all)"/>
+        <column xsi:type="varchar" name="segment_ids" length="255" nullable="true" comment="Segment IDs (CSV, empty = all)"/>
+        <column xsi:type="smallint" name="show_reason" unsigned="true" nullable="false" default="1" comment="Show Reason"/>
+        <column xsi:type="text" name="pinned_skus" nullable="true" comment="Pinned SKUs (SKU:position per line)"/>
+        <column xsi:type="text" name="excluded_skus" nullable="true" comment="Excluded SKUs"/>
+        <column xsi:type="varchar" name="excluded_category_ids" length="255" nullable="true" comment="Excluded Category IDs"/>
+        <column xsi:type="text" name="complementary_map" nullable="true" comment="Complementary Category Map"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_UNIT_CODE">
+            <column name="code"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_UNIT_PLACEMENT_STATUS" indexType="btree">
+            <column name="placement"/>
+            <column name="status"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_rule" resource="default" engine="innodb" comment="AI Recommendation Business Rule">
+        <column xsi:type="int" name="rule_id" unsigned="true" nullable="false" identity="true" comment="Rule ID"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="false" comment="Name"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" default="1" comment="Status"/>
+        <column xsi:type="int" name="priority" nullable="false" default="0" comment="Priority (higher first)"/>
+        <column xsi:type="smallint" name="stop_further" unsigned="true" nullable="false" default="0" comment="Stop Further Rules"/>
+        <column xsi:type="varchar" name="store_ids" length="255" nullable="false" default="0" comment="Store View IDs"/>
+        <column xsi:type="varchar" name="customer_group_ids" length="255" nullable="true" comment="Customer Group IDs"/>
+        <column xsi:type="text" name="unit_codes" nullable="true" comment="Unit Codes (CSV, empty = all)"/>
+        <column xsi:type="date" name="from_date" nullable="true" comment="Active From"/>
+        <column xsi:type="date" name="to_date" nullable="true" comment="Active To"/>
+        <column xsi:type="mediumtext" name="conditions" nullable="true" comment="Conditions (JSON)"/>
+        <column xsi:type="mediumtext" name="actions" nullable="true" comment="Actions (JSON)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="rule_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_RULE_STATUS_PRIORITY" indexType="btree">
+            <column name="status"/>
+            <column name="priority"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_campaign" resource="default" engine="innodb" comment="AI Recommendation Campaign">
+        <column xsi:type="int" name="campaign_id" unsigned="true" nullable="false" identity="true" comment="Campaign ID"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="false" comment="Name"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" default="1" comment="Status"/>
+        <column xsi:type="varchar" name="store_ids" length="255" nullable="false" default="0" comment="Store View IDs"/>
+        <column xsi:type="text" name="unit_codes" nullable="true" comment="Unit Codes (CSV, empty = all)"/>
+        <column xsi:type="varchar" name="segment_ids" length="255" nullable="true" comment="Segment IDs"/>
+        <column xsi:type="datetime" name="start_at" nullable="true" comment="Start At"/>
+        <column xsi:type="datetime" name="end_at" nullable="true" comment="End At"/>
+        <column xsi:type="text" name="boost_skus" nullable="true" comment="Boosted SKUs"/>
+        <column xsi:type="varchar" name="boost_category_ids" length="255" nullable="true" comment="Boosted Category IDs"/>
+        <column xsi:type="decimal" name="boost_amount" scale="4" precision="8" nullable="false" default="0.2" comment="Boost Amount"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="campaign_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_CAMPAIGN_STATUS_DATES" indexType="btree">
+            <column name="status"/>
+            <column name="start_at"/>
+            <column name="end_at"/>
+        </index>
+    </table>
+
+    <table name="ai_customer_segment" resource="default" engine="innodb" comment="AI Customer Segment">
+        <column xsi:type="int" name="segment_id" unsigned="true" nullable="false" identity="true" comment="Segment ID"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="false" comment="Name"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" default="1" comment="Status"/>
+        <column xsi:type="varchar" name="match_type" length="8" nullable="false" default="all" comment="all / any"/>
+        <column xsi:type="text" name="description" nullable="true" comment="Description"/>
+        <column xsi:type="mediumtext" name="conditions" nullable="true" comment="Conditions (JSON)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="segment_id"/>
+        </constraint>
+    </table>
+
+    <table name="ai_ab_experiment" resource="default" engine="innodb" comment="AI Recommendation A/B Experiment">
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="false" identity="true" comment="Experiment ID"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="false" comment="Name"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="false" comment="Unit Code"/>
+        <column xsi:type="smallint" name="status" unsigned="true" nullable="false" default="0" comment="Status"/>
+        <column xsi:type="varchar" name="store_ids" length="255" nullable="false" default="0" comment="Store View IDs"/>
+        <column xsi:type="datetime" name="start_at" nullable="true" comment="Start At"/>
+        <column xsi:type="datetime" name="end_at" nullable="true" comment="End At"/>
+        <column xsi:type="text" name="description" nullable="true" comment="Hypothesis"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="experiment_id"/>
+        </constraint>
+        <index referenceId="AI_AB_EXPERIMENT_UNIT_STATUS" indexType="btree">
+            <column name="unit_code"/>
+            <column name="status"/>
+        </index>
+    </table>
+
+    <table name="ai_ab_variant" resource="default" engine="innodb" comment="AI Recommendation A/B Variant">
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="false" identity="true" comment="Variant ID"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="false" comment="Experiment ID"/>
+        <column xsi:type="varchar" name="code" length="32" nullable="false" comment="Variant Code"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="true" comment="Name"/>
+        <column xsi:type="smallint" name="allocation" unsigned="true" nullable="false" default="50" comment="Traffic Allocation %"/>
+        <column xsi:type="smallint" name="is_control" unsigned="true" nullable="false" default="0" comment="Is Control"/>
+        <column xsi:type="text" name="configuration" nullable="true" comment="Configuration Overrides (JSON)"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="variant_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="AI_AB_VARIANT_EXPERIMENT_ID_AI_AB_EXPERIMENT_EXPERIMENT_ID"
+                    table="ai_ab_variant" column="experiment_id" referenceTable="ai_ab_experiment"
+                    referenceColumn="experiment_id" onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="AI_AB_VARIANT_EXPERIMENT_ID_CODE">
+            <column name="experiment_id"/>
+            <column name="code"/>
+        </constraint>
+    </table>
+
+    <table name="ai_ab_assignment" resource="default" engine="innodb" comment="AI Recommendation A/B Assignment">
+        <column xsi:type="bigint" name="assignment_id" unsigned="true" nullable="false" identity="true" comment="Assignment ID"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="false" comment="Experiment ID"/>
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="false" comment="Variant ID"/>
+        <column xsi:type="varchar" name="subject_key" length="80" nullable="false" comment="c:{customer_id} or v:{visitor_id}"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="assignment_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="AI_AB_ASSIGNMENT_EXPERIMENT_ID_AI_AB_EXPERIMENT_EXPERIMENT_ID"
+                    table="ai_ab_assignment" column="experiment_id" referenceTable="ai_ab_experiment"
+                    referenceColumn="experiment_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="AI_AB_ASSIGNMENT_VARIANT_ID_AI_AB_VARIANT_VARIANT_ID"
+                    table="ai_ab_assignment" column="variant_id" referenceTable="ai_ab_variant"
+                    referenceColumn="variant_id" onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="AI_AB_ASSIGNMENT_EXPERIMENT_ID_SUBJECT_KEY">
+            <column name="experiment_id"/>
+            <column name="subject_key"/>
+        </constraint>
+    </table>
+
+    <!-- ===================== personalization ===================== -->
+
+    <table name="ai_customer_profile" resource="default" engine="innodb" comment="AI Derived Personalization Profile">
+        <column xsi:type="int" name="profile_id" unsigned="true" nullable="false" identity="true" comment="Profile ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="varchar" name="visitor_id" length="64" nullable="true" comment="Pseudonymous Visitor ID"/>
+        <column xsi:type="varchar" name="profile_type" length="16" nullable="false" default="anonymous" comment="anonymous / guest / customer"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="true" comment="Last Store ID"/>
+        <column xsi:type="mediumtext" name="features_json" nullable="true" comment="Aggregate Features (no raw PII)"/>
+        <column xsi:type="int" name="event_count" unsigned="true" nullable="false" default="0" comment="Event Count"/>
+        <column xsi:type="int" name="merged_into" unsigned="true" nullable="true" comment="Merged Into Profile ID"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="profile_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_CUSTOMER_PROFILE_CUSTOMER_ID">
+            <column name="customer_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_CUSTOMER_PROFILE_VISITOR_ID">
+            <column name="visitor_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="AI_CUSTOMER_PROFILE_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID"
+                    table="ai_customer_profile" column="customer_id" referenceTable="customer_entity"
+                    referenceColumn="entity_id" onDelete="CASCADE"/>
+        <index referenceId="AI_CUSTOMER_PROFILE_UPDATED_AT" indexType="btree">
+            <column name="updated_at"/>
+        </index>
+    </table>
+
+    <!-- ===================== behavior & attribution ===================== -->
+
+    <table name="ai_recommendation_event" resource="default" engine="innodb" comment="AI Behavior / Interaction Event">
+        <column xsi:type="bigint" name="event_id" unsigned="true" nullable="false" identity="true" comment="Event ID"/>
+        <column xsi:type="varchar" name="event_uuid" length="64" nullable="false" comment="Client/Server Event UUID"/>
+        <column xsi:type="varchar" name="event_type" length="40" nullable="false" comment="Event Type"/>
+        <column xsi:type="int" name="subject_id" unsigned="true" nullable="true" comment="Product ID"/>
+        <column xsi:type="varchar" name="sku" length="64" nullable="true" comment="SKU"/>
+        <column xsi:type="int" name="category_id" unsigned="true" nullable="true" comment="Category ID"/>
+        <column xsi:type="varchar" name="search_query" length="128" nullable="true" comment="Search Query"/>
+        <column xsi:type="decimal" name="qty" scale="4" precision="12" nullable="true" comment="Quantity"/>
+        <column xsi:type="decimal" name="revenue" scale="4" precision="20" nullable="true" comment="Revenue (base currency)"/>
+        <column xsi:type="int" name="order_id" unsigned="true" nullable="true" comment="Order ID"/>
+        <column xsi:type="varchar" name="visitor_id" length="64" nullable="true" comment="Visitor ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="true" comment="Recommendation Unit Code"/>
+        <column xsi:type="smallint" name="position" unsigned="true" nullable="true" comment="Position"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="true" comment="Experiment ID"/>
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="true" comment="Variant ID"/>
+        <column xsi:type="varchar" name="source" length="16" nullable="false" default="web" comment="web / api / graphql / server"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="event_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_EVENT_EVENT_UUID">
+            <column name="event_uuid"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_EVENT_TYPE_CREATED_AT" indexType="btree">
+            <column name="event_type"/>
+            <column name="created_at"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_EVENT_VISITOR_ID_CREATED_AT" indexType="btree">
+            <column name="visitor_id"/>
+            <column name="created_at"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_EVENT_CUSTOMER_ID_CREATED_AT" indexType="btree">
+            <column name="customer_id"/>
+            <column name="created_at"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_EVENT_SUBJECT_ID_TYPE" indexType="btree">
+            <column name="subject_id"/>
+            <column name="event_type"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_EVENT_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_impression" resource="default" engine="innodb" comment="AI Recommendation Impression">
+        <column xsi:type="bigint" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="varchar" name="event_uuid" length="64" nullable="false" comment="Impression Event UUID"/>
+        <column xsi:type="varchar" name="request_id" length="32" nullable="true" comment="Recommendation Request ID"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="false" comment="Unit Code"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="smallint" name="position" unsigned="true" nullable="true" comment="Position"/>
+        <column xsi:type="varchar" name="visitor_id" length="64" nullable="true" comment="Visitor ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="true" comment="Experiment ID"/>
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="true" comment="Variant ID"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_IMPRESSION_EVENT_UUID">
+            <column name="event_uuid"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_IMPRESSION_CREATED_AT_UNIT_CODE" indexType="btree">
+            <column name="created_at"/>
+            <column name="unit_code"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_IMPRESSION_VISITOR_ID" indexType="btree">
+            <column name="visitor_id"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_IMPRESSION_CUSTOMER_ID" indexType="btree">
+            <column name="customer_id"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_click" resource="default" engine="innodb" comment="AI Recommendation Click">
+        <column xsi:type="bigint" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="varchar" name="event_uuid" length="64" nullable="false" comment="Click Event UUID"/>
+        <column xsi:type="varchar" name="request_id" length="32" nullable="true" comment="Recommendation Request ID"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="false" comment="Unit Code"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="smallint" name="position" unsigned="true" nullable="true" comment="Position"/>
+        <column xsi:type="varchar" name="visitor_id" length="64" nullable="true" comment="Visitor ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="true" comment="Experiment ID"/>
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="true" comment="Variant ID"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_CLICK_EVENT_UUID">
+            <column name="event_uuid"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_CLICK_VISITOR_PRODUCT_CREATED" indexType="btree">
+            <column name="visitor_id"/>
+            <column name="product_id"/>
+            <column name="created_at"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_CLICK_CUSTOMER_PRODUCT_CREATED" indexType="btree">
+            <column name="customer_id"/>
+            <column name="product_id"/>
+            <column name="created_at"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_CLICK_CREATED_AT_UNIT_CODE" indexType="btree">
+            <column name="created_at"/>
+            <column name="unit_code"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_conversion" resource="default" engine="innodb" comment="AI Recommendation Conversion Attribution">
+        <column xsi:type="bigint" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="order_id" unsigned="true" nullable="false" comment="Order ID"/>
+        <column xsi:type="int" name="order_item_id" unsigned="true" nullable="false" comment="Order Item ID"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="false" comment="Unit Code"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="decimal" name="qty" scale="4" precision="12" nullable="false" default="0" comment="Qty"/>
+        <column xsi:type="decimal" name="revenue" scale="4" precision="20" nullable="false" default="0" comment="Attributed Revenue (base currency)"/>
+        <column xsi:type="varchar" name="visitor_id" length="64" nullable="true" comment="Visitor ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" comment="Customer ID"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="true" comment="Experiment ID"/>
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="true" comment="Variant ID"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="varchar" name="attribution_type" length="16" nullable="false" default="click" comment="Attribution Type"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_CONVERSION_ORDER_ITEM_ID">
+            <column name="order_item_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_CONVERSION_CREATED_AT_UNIT_CODE" indexType="btree">
+            <column name="created_at"/>
+            <column name="unit_code"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_CONVERSION_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_analytics_daily" resource="default" engine="innodb" comment="AI Recommendation Daily Aggregates">
+        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="date" name="period" nullable="false" comment="Day"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="false" comment="Unit Code"/>
+        <column xsi:type="int" name="experiment_id" unsigned="true" nullable="false" default="0" comment="Experiment ID"/>
+        <column xsi:type="int" name="variant_id" unsigned="true" nullable="false" default="0" comment="Variant ID"/>
+        <column xsi:type="int" name="impressions" unsigned="true" nullable="false" default="0" comment="Impressions"/>
+        <column xsi:type="int" name="clicks" unsigned="true" nullable="false" default="0" comment="Clicks"/>
+        <column xsi:type="int" name="add_to_carts" unsigned="true" nullable="false" default="0" comment="Add to Carts"/>
+        <column xsi:type="int" name="orders" unsigned="true" nullable="false" default="0" comment="Attributed Orders"/>
+        <column xsi:type="decimal" name="items" scale="4" precision="12" nullable="false" default="0" comment="Attributed Items"/>
+        <column xsi:type="decimal" name="revenue" scale="4" precision="20" nullable="false" default="0" comment="Attributed Revenue"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_ANALYTICS_DAILY_KEY">
+            <column name="period"/>
+            <column name="store_id"/>
+            <column name="unit_code"/>
+            <column name="experiment_id"/>
+            <column name="variant_id"/>
+        </constraint>
+    </table>
+
+    <!-- ===================== precomputed recommendation data ===================== -->
+
+    <table name="ai_recommendation_result" resource="default" engine="innodb" comment="AI Recommendation Last-good Result">
+        <column xsi:type="int" name="result_id" unsigned="true" nullable="false" identity="true" comment="Result ID"/>
+        <column xsi:type="varchar" name="context_hash" length="64" nullable="false" comment="Normalized Context Hash"/>
+        <column xsi:type="varchar" name="unit_code" length="64" nullable="true" comment="Unit Code"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" default="0" comment="Store ID"/>
+        <column xsi:type="text" name="product_ids" nullable="true" comment="Product IDs (CSV)"/>
+        <column xsi:type="mediumtext" name="payload" nullable="true" comment="Result Payload (JSON)"/>
+        <column xsi:type="varchar" name="source" length="32" nullable="true" comment="Source"/>
+        <column xsi:type="varchar" name="model_version" length="64" nullable="true" comment="Model Version"/>
+        <column xsi:type="timestamp" name="generated_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Generated At"/>
+        <column xsi:type="datetime" name="expires_at" nullable="true" comment="Expires At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="result_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="AI_RECOMMENDATION_RESULT_CONTEXT_HASH">
+            <column name="context_hash"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_RESULT_EXPIRES_AT" indexType="btree">
+            <column name="expires_at"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_product_stat" resource="default" engine="innodb" comment="AI Product Popularity / Trending Stats">
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" comment="Store ID"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="int" name="views" unsigned="true" nullable="false" default="0" comment="Views in Window"/>
+        <column xsi:type="int" name="carts" unsigned="true" nullable="false" default="0" comment="Add to Carts in Window"/>
+        <column xsi:type="int" name="wishlists" unsigned="true" nullable="false" default="0" comment="Wishlist Adds in Window"/>
+        <column xsi:type="decimal" name="purchases" scale="4" precision="12" nullable="false" default="0" comment="Units Purchased in Window"/>
+        <column xsi:type="decimal" name="popularity_score" scale="6" precision="10" nullable="false" default="0" comment="Normalized Popularity"/>
+        <column xsi:type="decimal" name="trending_score" scale="6" precision="10" nullable="false" default="0" comment="Normalized Trending"/>
+        <column xsi:type="decimal" name="conversion_score" scale="6" precision="10" nullable="false" default="0" comment="Normalized Conversion"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="store_id"/>
+            <column name="product_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_PRODUCT_STAT_STORE_POPULARITY" indexType="btree">
+            <column name="store_id"/>
+            <column name="popularity_score"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_PRODUCT_STAT_STORE_TRENDING" indexType="btree">
+            <column name="store_id"/>
+            <column name="trending_score"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_product_relation" resource="default" engine="innodb" comment="AI Product Relations (co-purchase, co-view, similar)">
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" comment="Store ID"/>
+        <column xsi:type="varchar" name="relation_type" length="16" nullable="false" comment="co_purchase / co_view / similar"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="int" name="related_id" unsigned="true" nullable="false" comment="Related Product ID"/>
+        <column xsi:type="decimal" name="score" scale="6" precision="12" nullable="false" default="0" comment="Score"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="store_id"/>
+            <column name="relation_type"/>
+            <column name="product_id"/>
+            <column name="related_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_PRODUCT_RELATION_RELATED_ID" indexType="btree">
+            <column name="related_id"/>
+        </index>
+    </table>
+
+    <table name="ai_recommendation_product_index" resource="default" engine="innodb" comment="AI Product Embedding / Sync Index">
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" comment="Store ID"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="varchar" name="sku" length="64" nullable="true" comment="SKU"/>
+        <column xsi:type="varchar" name="content_hash" length="64" nullable="true" comment="Embedding Source Hash"/>
+        <column xsi:type="varchar" name="payload_hash" length="64" nullable="true" comment="Sync Payload Hash"/>
+        <column xsi:type="mediumtext" name="vector" nullable="true" comment="Embedding (base64 float32)"/>
+        <column xsi:type="varchar" name="model" length="128" nullable="true" comment="Embedding Model"/>
+        <column xsi:type="varchar" name="model_version" length="64" nullable="true" comment="Embedding Model Version"/>
+        <column xsi:type="smallint" name="dimensions" unsigned="true" nullable="false" default="0" comment="Dimensions"/>
+        <column xsi:type="varchar" name="status" length="16" nullable="false" default="pending" comment="pending / indexed / failed / skipped"/>
+        <column xsi:type="varchar" name="sync_status" length="16" nullable="false" default="disabled" comment="disabled / pending / synced / failed"/>
+        <column xsi:type="smallint" name="attempts" unsigned="true" nullable="false" default="0" comment="Failed Attempts"/>
+        <column xsi:type="text" name="last_error" nullable="true" comment="Last Error (sanitized)"/>
+        <column xsi:type="datetime" name="indexed_at" nullable="true" comment="Indexed At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="store_id"/>
+            <column name="product_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_PRODUCT_INDEX_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+        <index referenceId="AI_RECOMMENDATION_PRODUCT_INDEX_PRODUCT_ID" indexType="btree">
+            <column name="product_id"/>
+        </index>
+    </table>
+
+    <!-- ===================== operations ===================== -->
+
+    <table name="ai_recommendation_error_log" resource="default" engine="innodb" comment="AI Recommendation Job Error Log">
+        <column xsi:type="int" name="log_id" unsigned="true" nullable="false" identity="true" comment="Log ID"/>
+        <column xsi:type="varchar" name="job_type" length="32" nullable="false" comment="Job Type"/>
+        <column xsi:type="varchar" name="correlation_id" length="32" nullable="true" comment="Correlation ID"/>
+        <column xsi:type="text" name="message" nullable="true" comment="Sanitized Error"/>
+        <column xsi:type="mediumtext" name="payload" nullable="true" comment="Job Payload (JSON, no secrets)"/>
+        <column xsi:type="smallint" name="attempts" unsigned="true" nullable="false" default="1" comment="Attempts"/>
+        <column xsi:type="varchar" name="status" length="16" nullable="false" default="open" comment="open / resolved"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="log_id"/>
+        </constraint>
+        <index referenceId="AI_RECOMMENDATION_ERROR_LOG_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+    </table>
+</schema>

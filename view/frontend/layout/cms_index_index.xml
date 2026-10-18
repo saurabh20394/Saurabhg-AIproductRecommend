@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content.top">
+            <block class="Saurabhg\AIproductRecommend\Block\Placement" name="airecommend.home.top">
+                <arguments>
+                    <argument name="placement" xsi:type="string">home_top</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceContainer name="content.bottom">
+            <block class="Saurabhg\AIproductRecommend\Block\Placement" name="airecommend.home.bottom">
+                <arguments>
+                    <argument name="placement" xsi:type="string">home_bottom</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

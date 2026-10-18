@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="saurabhg.airecommend.event" request="string" is_synchronous="false"/>
+    <topic name="saurabhg.airecommend.product.index" request="string" is_synchronous="false"/>
+</config>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * bin/magento queue:consumers:start saurabhgAiRecommendEvent
+ * bin/magento queue:consumers:start saurabhgAiRecommendProductIndex
+ * (started automatically by cron through cron_consumers_runner unless disabled in env.php)
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
+    <consumer name="saurabhgAiRecommendEvent" queue="saurabhg.airecommend.event"
+              handler="Saurabhg\AIproductRecommend\Queue\EventConsumer::process"/>
+    <consumer name="saurabhgAiRecommendProductIndex" queue="saurabhg.airecommend.product.index"
+              handler="Saurabhg\AIproductRecommend\Queue\ProductIndexConsumer::process"/>
+</config>

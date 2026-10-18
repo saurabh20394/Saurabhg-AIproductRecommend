@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">saurabhg_airecommend_errorlog_listing.saurabhg_airecommend_errorlog_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>saurabhg_airecommend_errorlog_listing_columns</spinner>
+        <deps>
+            <dep>saurabhg_airecommend_errorlog_listing.saurabhg_airecommend_errorlog_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="saurabhg_airecommend_errorlog_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">log_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Saurabhg_AIproductRecommend::monitor</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="saurabhg_airecommend_errorlog_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>log_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <massaction name="listing_massaction">
+            <action name="retry">
+                <settings>
+                    <url path="saurabhg_airecommend/monitor/retry"/>
+                    <type>retry</type>
+                    <label translate="true">Retry</label>
+                </settings>
+            </action>
+            <action name="resolve">
+                <settings>
+                    <url path="saurabhg_airecommend/monitor/resolve"/>
+                    <type>resolve</type>
+                    <label translate="true">Mark Resolved</label>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="saurabhg_airecommend_errorlog_listing_columns">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>log_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="log_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+        <column name="job_type" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Job</label>
+            </settings>
+        </column>
+        <column name="message" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Error</label>
+            </settings>
+        </column>
+        <column name="attempts" sortOrder="40">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Attempts</label>
+            </settings>
+        </column>
+        <column name="status" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <column name="correlation_id" sortOrder="60">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Correlation ID</label>
+            </settings>
+        </column>
+        <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date" component="Magento_Ui/js/grid/columns/date" sortOrder="70">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created</label>
+            </settings>
+        </column>
+    </columns>
+</listing>

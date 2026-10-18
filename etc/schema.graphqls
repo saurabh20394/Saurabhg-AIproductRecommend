@@ -1,0 +1,81 @@
+# Saurabhg_AIproductRecommend
+#
+# @copyright Copyright (C) 2026 Saurabh Gupta
+# @license   GPL-3.0-or-later
+
+type Query {
+    aiRecommendations(
+        unitCode: String @doc(description: "Recommendation unit code, e.g. pdp_similar.")
+        type: AiRecommendationType @doc(description: "Recommendation type when no unit code is given.")
+        productSku: String @doc(description: "Current product.")
+        categoryId: Int @doc(description: "Current category.")
+        cartSkus: [String] @doc(description: "SKUs in the shopper's cart.")
+        visitorId: String @doc(description: "Pseudonymous visitor ID; send only with the shopper's consent.")
+        pageType: String @doc(description: "home, category, product, cart, success, search.")
+        limit: Int @doc(description: "1-50 products.")
+    ): AiRecommendationResult
+        @resolver(class: "Saurabhg\\AIproductRecommend\\GraphQl\\Resolver\\Recommendations")
+        @doc(description: "Personalized product recommendations. The customer is taken from the customer token, never from arguments.")
+        @cache(cacheable: false)
+}
+
+type Mutation {
+    aiRecommendationTrackEvents(
+        events: [AiRecommendationEventInput!]! @doc(description: "Behavior / recommendation events (max batch configurable).")
+    ): AiRecommendationEventResult
+        @resolver(class: "Saurabhg\\AIproductRecommend\\GraphQl\\Resolver\\TrackEvents")
+        @doc(description: "Submit events for asynchronous processing.")
+}
+
+enum AiRecommendationType {
+    popular
+    trending
+    recently_viewed
+    frequently_bought_together
+    also_viewed
+    similar
+    recommended_for_you
+    complementary
+    hybrid
+    newest
+}
+
+type AiRecommendationResult @doc(description: "Recommendation response.") {
+    unitCode: String
+    title: String
+    type: String
+    source: String @doc(description: "local, remote, cache, last_good, fallback, holdout, disabled, not_applicable, not_found.")
+    isFallback: Boolean
+    requestId: String @doc(description: "Correlation ID.")
+    trackingToken: String @doc(description: "Send back with recommendation_impression / recommendation_click events.")
+    products: [AiRecommendedProduct]
+}
+
+type AiRecommendedProduct {
+    sku: String
+    position: Int
+    score: Float @doc(description: "Null unless score exposure is enabled in configuration.")
+    reason: String @doc(description: "Safe reason code.")
+    reasonLabel: String @doc(description: "Translated reason label.")
+    product: ProductInterface @doc(description: "Full product data for rendering.")
+}
+
+input AiRecommendationEventInput {
+    eventId: String
+    eventType: String!
+    timestamp: Int
+    sku: String
+    categoryId: Int
+    query: String
+    quantity: Float
+    visitorId: String
+    unitCode: String
+    position: Int
+    trackingToken: String
+}
+
+type AiRecommendationEventResult {
+    accepted: Int
+    rejected: Int
+    errors: [String]
+}

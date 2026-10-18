@@ -1,0 +1,43 @@
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+.aipr-unit { margin: 0 0 30px; }
+.aipr-unit--loading { min-height: 60px; }
+.aipr-unit--empty { display: none; }
+
+.aipr-block__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.aipr-block__title { margin: 0; font-size: 2rem; font-weight: 300; }
+.aipr-block__nav { display: flex; gap: 6px; }
+.aipr-nav {
+    width: 36px; height: 36px; padding: 0; border: 1px solid #ccc; border-radius: 50%;
+    background: #fff; color: #333; font-size: 22px; line-height: 1; cursor: pointer;
+}
+.aipr-nav:hover, .aipr-nav:focus-visible { border-color: #1979c3; color: #1979c3; }
+
+.aipr-block .aipr-items {
+    display: grid; grid-auto-flow: column; gap: 16px; margin: 0; padding: 4px 2px 12px; list-style: none;
+    grid-auto-columns: calc((100% - 3 * 16px) / 4);
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+}
+.aipr-block .aipr-items:focus-visible { outline: 2px solid #1979c3; outline-offset: 2px; }
+.aipr-block .aipr-item { width: auto; margin: 0; padding: 0; scroll-snap-align: start; }
+.aipr-block .aipr-item .product-item-info { width: 100%; }
+.aipr-block .aipr-item .product-image-container { width: 100% !important; }
+.aipr-reason {
+    display: inline-block; margin: 6px 0 2px; padding: 1px 8px; border-radius: 10px;
+    background: #f0f6fb; color: #1a5f99; font-size: 1.2rem;
+}
+
+@media (max-width: 1023px) {
+    .aipr-block .aipr-items { grid-auto-columns: calc((100% - 2 * 16px) / 3); }
+}
+@media (max-width: 639px) {
+    .aipr-block .aipr-items { grid-auto-columns: 46%; }
+    .aipr-block__nav { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .aipr-block .aipr-items { scroll-behavior: auto; }
+}

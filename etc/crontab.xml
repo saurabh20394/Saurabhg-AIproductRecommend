@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Saurabhg_AIproductRecommend
+ *
+ * @copyright Copyright (C) 2026 Saurabh Gupta
+ * @license   GPL-3.0-or-later
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="saurabhg_airecommend">
+        <job name="saurabhg_airecommend_trending_calculation" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="calculateStats">
+            <schedule>15 * * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_co_purchase_calculation" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="calculateRelations">
+            <schedule>30 3 * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_analytics_aggregation" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="aggregateAnalytics">
+            <schedule>5 * * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_profile_aggregation" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="aggregateProfiles">
+            <schedule>40 * * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_recommendation_precompute" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="precompute">
+            <schedule>20 * * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_embedding_generation" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="processPendingIndex">
+            <schedule>*/10 * * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_catalog_sync" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="reconcileCatalog">
+            <schedule>45 2 * * *</schedule>
+        </job>
+        <job name="saurabhg_airecommend_event_cleanup" instance="Saurabhg\AIproductRecommend\Cron\Jobs" method="cleanup">
+            <schedule>15 4 * * *</schedule>
+        </job>
+    </group>
+</config>
